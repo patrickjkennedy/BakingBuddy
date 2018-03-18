@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Baking Buddy</string>
+    <string name="master_list_error">Unable to load recipes</string>
 </resources>
