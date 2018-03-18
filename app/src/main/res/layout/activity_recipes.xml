@@ -3,6 +3,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/recipes_master_list_fragment"
+    android:name="com.example.android.bakingbuddy.ui.MasterListFragment"
     />
-
-    <!--Need to add the reference to the recipes master list fragment class once created in here -->

@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.bakingbuddy.R;
+import com.example.android.bakingbuddy.data.MasterListAdapter;
 
 /**
  * Created by pkennedy on 3/18/18.
@@ -25,7 +26,7 @@ public class MasterListFragment extends Fragment {
 
     // RecyclerView
     private RecyclerView mRecyclerView;
-    private Adapter mAdapter;
+    private MasterListAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     // TextView for Error Messaging
@@ -62,7 +63,11 @@ public class MasterListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        //TODO: Create and  Initialize the recyclerview adapter
+        // Initialize the RecyclerView adapter, MasterListAdapter
+        mAdapter = new MasterListAdapter();
+
+        // Set the adapter
+        mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
     }
