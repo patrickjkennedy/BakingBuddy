@@ -5,15 +5,29 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.MasterListAdapter;
+import com.example.android.bakingbuddy.model.Recipe;
+import com.example.android.bakingbuddy.service.RecipeClient;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by pkennedy on 3/18/18.
@@ -68,6 +82,36 @@ public class MasterListFragment extends Fragment {
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
+
+        // Construct the Retrofit builder
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/")
+                .addConverterFactory(GsonConverterFactory.create());
+
+        // Create the retrofit objects
+        Retrofit retrofit = builder.build();
+
+        // Make the request and return the call object
+        RecipeClient client = retrofit.create(RecipeClient.class);
+        Call<ArrayList<Recipe>> call = client.getRecipes();
+
+        // As we're in UI thread, we need to make the network call asynchronously, we do this using enqueue
+        call.enqueue(new Callback<ArrayList<Recipe>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
+                //TODO: pass recipes into adapter and do binding there
+                ArrayList<Recipe> recipes = response.body();
+                Integer statusCode = response.code();
+                Log.d("RecipesActivity", "Recipe 1 name: " + recipes.get(0).getName());
+                Log.d("RecipesActivity", "First ingredient: " + recipes.get(0).getIngredients().get(0).getIngredient());
+                Log.d("RecipesActivity", "Response code: " + statusCode);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
+                Toast.makeText(getActivity(), "Error in Network call", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return rootView;
     }
