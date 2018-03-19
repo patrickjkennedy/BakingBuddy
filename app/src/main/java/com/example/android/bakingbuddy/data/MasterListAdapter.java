@@ -1,5 +1,6 @@
 package com.example.android.bakingbuddy.data;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
+import com.example.android.bakingbuddy.model.Recipe;
+
+import java.util.ArrayList;
 
 
 /**
@@ -15,10 +19,19 @@ import com.example.android.bakingbuddy.R;
 
 public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.ViewHolder> {
 
+    private Context mContext;
+
     // I'll put some placeholder data here to use for testing
+    //TODO: Replace these with resources from api
     private int[] images = { R.drawable.nutella_pie, R.drawable.brownies, R.drawable.yellow_cake, R.drawable.cheesecake };
-    private String[] names = { "Nutella Pie", "Brownies", "Yellow Cake", "Cheesecake"};
-    private String[] servings = { "Serves 8", "Serves 8", "Serves 8", "Serves 8" };
+
+    // ArrayList of Recipes
+    private ArrayList<Recipe> mRecipes = new ArrayList<>();
+
+    public MasterListAdapter(Context context, ArrayList<Recipe> recipes){
+        this.mContext = context;
+        this.mRecipes = recipes;
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -46,12 +59,13 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.itemImage.setImageResource(images[position]);
-        holder.itemName.setText(names[position]);
-        holder.itemServes.setText(servings[position]);
+        holder.itemName.setText(mRecipes.get(position).getName());
+        holder.itemServes.setText(mRecipes.get(position).getServings());
     }
 
     @Override
     public int getItemCount() {
-        return names.length;
+        if (null == mRecipes) return 0;
+        return mRecipes.size();
     }
 }

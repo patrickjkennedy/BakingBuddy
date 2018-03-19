@@ -12,17 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.MasterListAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
 import com.example.android.bakingbuddy.service.RecipeClient;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -77,12 +71,6 @@ public class MasterListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // Initialize the RecyclerView adapter, MasterListAdapter
-        mAdapter = new MasterListAdapter();
-
-        // Set the adapter
-        mRecyclerView.setAdapter(mAdapter);
-
         // Construct the Retrofit builder
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/")
@@ -101,10 +89,13 @@ public class MasterListFragment extends Fragment {
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
                 //TODO: pass recipes into adapter and do binding there
                 ArrayList<Recipe> recipes = response.body();
-                Integer statusCode = response.code();
-                Log.d("RecipesActivity", "Recipe 1 name: " + recipes.get(0).getName());
-                Log.d("RecipesActivity", "First ingredient: " + recipes.get(0).getIngredients().get(0).getIngredient());
-                Log.d("RecipesActivity", "Response code: " + statusCode);
+
+                // Initialize the RecyclerView adapter, MasterListAdapter
+                mAdapter = new MasterListAdapter(mContext, recipes);
+
+                // Set the adapter
+                mRecyclerView.setAdapter(mAdapter);
+
             }
 
             @Override
