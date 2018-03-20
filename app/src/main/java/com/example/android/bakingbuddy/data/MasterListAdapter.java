@@ -28,9 +28,8 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
     // ArrayList of Recipes
     private ArrayList<Recipe> mRecipes = new ArrayList<>();
 
-    public MasterListAdapter(Context context, ArrayList<Recipe> recipes){
+    public MasterListAdapter(Context context){
         this.mContext = context;
-        this.mRecipes = recipes;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -67,5 +66,10 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
     public int getItemCount() {
         if (null == mRecipes) return 0;
         return mRecipes.size();
+    }
+
+    public void setRecipes(ArrayList<Recipe> recipes){
+        mRecipes = recipes;
+        notifyDataSetChanged();
     }
 }

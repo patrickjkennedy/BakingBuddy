@@ -71,6 +71,9 @@ public class MasterListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        // Initialize the RecyclerView adapter, MasterListAdapter
+        mAdapter = new MasterListAdapter(mContext);
+
         // Construct the Retrofit builder
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/")
@@ -90,8 +93,8 @@ public class MasterListFragment extends Fragment {
                 //TODO: pass recipes into adapter and do binding there
                 ArrayList<Recipe> recipes = response.body();
 
-                // Initialize the RecyclerView adapter, MasterListAdapter
-                mAdapter = new MasterListAdapter(mContext, recipes);
+                // Pass the recipes from the response into the adapter
+                mAdapter.setRecipes(recipes);
 
                 // Set the adapter
                 mRecyclerView.setAdapter(mAdapter);
