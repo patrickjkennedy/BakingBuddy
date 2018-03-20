@@ -74,6 +74,9 @@ public class MasterListFragment extends Fragment {
         // Initialize the RecyclerView adapter, MasterListAdapter
         mAdapter = new MasterListAdapter(mContext);
 
+        // Set the adapter
+        mRecyclerView.setAdapter(mAdapter);
+
         // Construct the Retrofit builder
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/")
@@ -95,9 +98,6 @@ public class MasterListFragment extends Fragment {
 
                 // Pass the recipes from the response into the adapter
                 mAdapter.setRecipes(recipes);
-
-                // Set the adapter
-                mRecyclerView.setAdapter(mAdapter);
 
             }
 
