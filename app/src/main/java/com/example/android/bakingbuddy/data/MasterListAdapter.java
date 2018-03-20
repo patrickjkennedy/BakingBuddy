@@ -34,10 +34,10 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
 
     /**
      * The interface for custom RecyclerViewClickListener
-     * I need to pass a Recipe here...
+     *
      */
     public interface MasterListAdapterClickListener {
-        void onClick(View view, int position);
+        void onClick(View view, Recipe recipe);
     }
 
     public MasterListAdapter(MasterListAdapterClickListener listener, Context context){
@@ -62,7 +62,7 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
 
         @Override
         public void onClick(View view) {
-            mListener.onClick(view, getAdapterPosition());
+            mListener.onClick(view, mRecipes.get(getAdapterPosition()));
         }
     }
 

@@ -75,8 +75,8 @@ public class MasterListFragment extends Fragment{
         // Setup click listener
         MasterListAdapter.MasterListAdapterClickListener listener = new MasterListAdapter.MasterListAdapterClickListener() {
             @Override
-            public void onClick(View view, int position) {
-                Toast.makeText(mContext, "Position :" + position, Toast.LENGTH_SHORT).show();
+            public void onClick(View view, Recipe recipe) {
+                Toast.makeText(mContext, "Recipe name : " + recipe.getName(), Toast.LENGTH_SHORT).show();
             }
         };
 
