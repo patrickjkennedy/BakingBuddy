@@ -3,6 +3,7 @@ package com.example.android.bakingbuddy.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,7 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by pkennedy on 3/18/18.
  */
 
-public class MasterListFragment extends Fragment {
+public class MasterListFragment extends Fragment{
 
     // Context
     private Context mContext;
@@ -71,11 +72,20 @@ public class MasterListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        // Setup click listener
+        MasterListAdapter.MasterListAdapterClickListener listener = new MasterListAdapter.MasterListAdapterClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(mContext, "Position :" + position, Toast.LENGTH_SHORT).show();
+            }
+        };
+
         // Initialize the RecyclerView adapter, MasterListAdapter
-        mAdapter = new MasterListAdapter(mContext);
+        mAdapter = new MasterListAdapter(listener, mContext);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
+
 
         // Construct the Retrofit builder
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -93,7 +103,6 @@ public class MasterListFragment extends Fragment {
         call.enqueue(new Callback<ArrayList<Recipe>>() {
             @Override
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
-                //TODO: pass recipes into adapter and do binding there
                 ArrayList<Recipe> recipes = response.body();
 
                 // Pass the recipes from the response into the adapter
@@ -109,4 +118,5 @@ public class MasterListFragment extends Fragment {
 
         return rootView;
     }
+
 }

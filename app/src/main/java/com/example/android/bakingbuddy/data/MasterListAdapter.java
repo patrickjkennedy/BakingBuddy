@@ -1,7 +1,9 @@
 package com.example.android.bakingbuddy.data;
 
 import android.content.Context;
+import android.graphics.Movie;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,8 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
 
     private Context mContext;
 
+    private MasterListAdapterClickListener mListener;
+
     // I'll put some placeholder data here to use for testing
     //TODO: Replace these with resources from api
     private int[] images = { R.drawable.nutella_pie, R.drawable.brownies, R.drawable.yellow_cake, R.drawable.cheesecake };
@@ -28,22 +32,37 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
     // ArrayList of Recipes
     private ArrayList<Recipe> mRecipes = new ArrayList<>();
 
-    public MasterListAdapter(Context context){
+    /**
+     * The interface for custom RecyclerViewClickListener
+     * I need to pass a Recipe here...
+     */
+    public interface MasterListAdapterClickListener {
+        void onClick(View view, int position);
+    }
+
+    public MasterListAdapter(MasterListAdapterClickListener listener, Context context){
+        this.mListener = listener;
         this.mContext = context;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public int currentItem;
         public ImageView itemImage;
         public TextView itemName;
         public TextView itemServes;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView, MasterListAdapterClickListener listener){
             super(itemView);
             itemImage = (ImageView) itemView.findViewById(R.id.iv_master_list_item);
             itemName = (TextView) itemView.findViewById(R.id.tv_master_list_item_recipe_name);
             itemServes = (TextView) itemView.findViewById(R.id.tv_master_list_item_recipe_serves);
+            mListener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mListener.onClick(view, getAdapterPosition());
         }
     }
 
@@ -51,8 +70,7 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_layout_master_list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view, mListener);
     }
 
     @Override
