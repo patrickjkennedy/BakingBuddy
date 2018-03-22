@@ -1,6 +1,7 @@
 package com.example.android.bakingbuddy.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -50,7 +51,7 @@ public class MasterListFragment extends Fragment{
 
     // Inflates the RecyclerView containing the CardViews for each recipe
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Context
         mContext = getActivity();
@@ -69,14 +70,21 @@ public class MasterListFragment extends Fragment{
         mRecyclerView.setHasFixedSize(true);
 
         // Creating a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Setup click listener
         MasterListAdapter.MasterListAdapterClickListener listener = new MasterListAdapter.MasterListAdapterClickListener() {
             @Override
             public void onClick(View view, Recipe recipe) {
-                Toast.makeText(mContext, "Recipe name : " + recipe.getName(), Toast.LENGTH_SHORT).show();
+                Class destinationClass = StepActivity.class;
+                Intent intent = new Intent(mContext, destinationClass);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("recipe", recipe);
+
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         };
 
