@@ -19,20 +19,38 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
 
     private Context mContext;
 
+    private OverviewAdapterClickListener mListener;
+
     //ArrayList of Steps
     private ArrayList<Step> mSteps = new ArrayList<>();
 
-    public OverviewAdapter(Context context){
+    /**
+     * The interface for custom RecyclerViewClickListener
+     *
+     */
+    public interface OverviewAdapterClickListener {
+        void onClick(View view, Step step);
+    }
+
+    public OverviewAdapter(OverviewAdapterClickListener listener, Context context){
+        this.mListener = listener;
         this.mContext = context;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView shortDescription;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView, OverviewAdapterClickListener listener){
             super(itemView);
             shortDescription = (TextView) itemView.findViewById(R.id.tv_overview_item_shortDescription);
+            mListener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mListener.onClick(view, mSteps.get(getAdapterPosition()));
         }
     }
 
@@ -40,7 +58,7 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.overview_item, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mListener);
     }
 
     @Override

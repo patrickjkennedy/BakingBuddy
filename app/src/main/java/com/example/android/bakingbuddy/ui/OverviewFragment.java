@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.view.ViewGroup;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.OverviewAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
+import com.example.android.bakingbuddy.model.Step;
 
 /**
  * Created by pkennedy on 3/22/18.
@@ -57,8 +57,24 @@ public class OverviewFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        // Setup click listener
+        OverviewAdapter.OverviewAdapterClickListener listener = new OverviewAdapter.OverviewAdapterClickListener(){
+            @Override
+            public void onClick(View view, Step step) {
+                Class destinationClass = DetailActivity.class;
+                Intent intent = new Intent(mContext, destinationClass);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("step", step);
+                bundle.putSerializable("recipe", mRecipe);
+
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        };
+
         // Initialize the Recyclerview adapter, OverviewAdapter
-        mAdapter = new OverviewAdapter(mContext);
+        mAdapter = new OverviewAdapter(listener, mContext);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
@@ -76,6 +92,6 @@ public class OverviewFragment extends Fragment {
         super.onResume();
 
         // Set the title bar
-        ((StepActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        ((StepsActivity) getActivity()).setActionBarTitle(mRecipe.getName());
     }
 }
