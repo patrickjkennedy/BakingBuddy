@@ -1,5 +1,6 @@
 package com.example.android.bakingbuddy.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -69,7 +70,7 @@ public class OverviewFragment extends Fragment {
                 bundle.putSerializable("recipe", mRecipe);
 
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         };
 
@@ -93,5 +94,16 @@ public class OverviewFragment extends Fragment {
 
         // Set the title bar
         ((StepsActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1){
+            if(resultCode == Activity.RESULT_OK){
+                mRecipe = (Recipe) data.getSerializableExtra("recipe");
+            }
+        }
     }
 }

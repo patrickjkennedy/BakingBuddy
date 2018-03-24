@@ -1,15 +1,19 @@
 package com.example.android.bakingbuddy.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
+import com.example.android.bakingbuddy.model.Recipe;
 import com.example.android.bakingbuddy.model.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -36,6 +40,9 @@ public class DetailFragment extends Fragment {
     // Step
     private Step mStep;
 
+    // Recipe
+    private Recipe mRecipe;
+
     // SimpleExoPlayerView
     private SimpleExoPlayerView mPlayerView;
 
@@ -49,11 +56,17 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // Adding this allows the Fragment to call onOptionsItemSelected correctly
+        setHasOptionsMenu(true);
+
         mContext = getContext();
 
         // Get the data from the intent that started this activity
         Intent intent = getActivity().getIntent();
         mStep = (Step) intent.getSerializableExtra("step");
+        mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+
+        Log.d("DetailActivity", "Recipe name from startActivityFromResult: " + mRecipe.getName());
 
         // Inflate the fragment_detail layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -104,5 +117,24 @@ public class DetailFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         releasePlayer();
+    }
+
+    private void returnRecipe(){
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("recipe", mRecipe);
+        getActivity().setResult(Activity.RESULT_OK, returnIntent);
+        getActivity().finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                returnRecipe();
+                Log.d("DetailActivity", "You really did!");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
