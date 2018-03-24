@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,9 @@ public class OverviewFragment extends Fragment {
     private OverviewAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
+    // Recipe
+    private Recipe mRecipe;
+
     // Mandatory empty constructor
     public OverviewFragment(){
     }
@@ -38,7 +42,7 @@ public class OverviewFragment extends Fragment {
 
         // Get the recipe from the intent that started the activity
         Intent intent = getActivity().getIntent();
-        Recipe recipe = (Recipe) intent.getSerializableExtra("recipe");
+        mRecipe = (Recipe) intent.getSerializableExtra("recipe");
 
         // Context
         mContext = getActivity();
@@ -60,8 +64,18 @@ public class OverviewFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         // Pass in the recipe to extract the steps
-        mAdapter.setSteps(recipe);
+        mAdapter.setSteps(mRecipe);
+
+        // Set the title in the action bar to the recipe name
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Set the title bar
+        ((StepActivity) getActivity()).setActionBarTitle(mRecipe.getName());
     }
 }

@@ -11,4 +11,8 @@ public class StepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step);
     }
+
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
+    }
 }
