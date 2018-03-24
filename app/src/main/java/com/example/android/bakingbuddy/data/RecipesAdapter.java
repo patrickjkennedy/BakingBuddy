@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Created by pkennedy on 3/18/18.
  */
 
-public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.ViewHolder> {
+public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
 
     private Context mContext;
 
@@ -38,7 +38,7 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
         void onClick(View view, Recipe recipe);
     }
 
-    public MasterListAdapter(MasterListAdapterClickListener listener, Context context){
+    public RecipesAdapter(MasterListAdapterClickListener listener, Context context){
         this.mListener = listener;
         this.mContext = context;
     }
@@ -67,7 +67,7 @@ public class MasterListAdapter extends RecyclerView.Adapter<MasterListAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_layout_master_list_item, parent, false);
+                .inflate(R.layout.card_layout_recipes_item, parent, false);
         return new ViewHolder(view, mListener);
     }
 

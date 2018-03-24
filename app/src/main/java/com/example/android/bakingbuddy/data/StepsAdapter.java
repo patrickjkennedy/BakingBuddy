@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Created by pkennedy on 3/22/18.
  */
 
-public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHolder>{
+public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
     private Context mContext;
 
@@ -32,7 +32,7 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
         void onClick(View view, Step step);
     }
 
-    public OverviewAdapter(OverviewAdapterClickListener listener, Context context){
+    public StepsAdapter(OverviewAdapterClickListener listener, Context context){
         this.mListener = listener;
         this.mContext = context;
     }
@@ -57,7 +57,7 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.overview_item, parent, false);
+                .inflate(R.layout.step_item, parent, false);
         return new ViewHolder(view, mListener);
     }
 

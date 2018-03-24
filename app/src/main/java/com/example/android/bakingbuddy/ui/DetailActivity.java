@@ -12,4 +12,8 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
     }
+
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
+    }
 }

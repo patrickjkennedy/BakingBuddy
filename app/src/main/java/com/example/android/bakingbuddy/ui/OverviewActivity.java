@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.android.bakingbuddy.R;
 
-public class StepsActivity extends AppCompatActivity {
+public class OverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.android.bakingbuddy.R;
-import com.example.android.bakingbuddy.data.MasterListAdapter;
+import com.example.android.bakingbuddy.data.RecipesAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
 import com.example.android.bakingbuddy.service.RecipeClient;
 import java.util.ArrayList;
@@ -27,14 +27,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by pkennedy on 3/18/18.
  */
 
-public class MasterListFragment extends Fragment{
+public class RecipesFragment extends Fragment{
 
     // Context
     private Context mContext;
 
     // RecyclerView
     private RecyclerView mRecyclerView;
-    private MasterListAdapter mAdapter;
+    private RecipesAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     // TextView for Error Messaging
@@ -44,7 +44,7 @@ public class MasterListFragment extends Fragment{
     private ProgressBar mLoadingIndicator;
 
     // Mandatory empty constructor
-    public MasterListFragment(){
+    public RecipesFragment(){
     }
 
     // Inflates the RecyclerView containing the CardViews for each recipe
@@ -54,7 +54,7 @@ public class MasterListFragment extends Fragment{
         // Context
         mContext = getActivity();
 
-        final View rootView = inflater.inflate(R.layout.fragment_master_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
 
         // Recyclerview
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_master_list);
@@ -72,10 +72,10 @@ public class MasterListFragment extends Fragment{
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Setup click listener
-        MasterListAdapter.MasterListAdapterClickListener listener = new MasterListAdapter.MasterListAdapterClickListener() {
+        RecipesAdapter.MasterListAdapterClickListener listener = new RecipesAdapter.MasterListAdapterClickListener() {
             @Override
             public void onClick(View view, Recipe recipe) {
-                Class destinationClass = StepsActivity.class;
+                Class destinationClass = OverviewActivity.class;
                 Intent intent = new Intent(mContext, destinationClass);
 
                 Bundle bundle = new Bundle();
@@ -86,8 +86,8 @@ public class MasterListFragment extends Fragment{
             }
         };
 
-        // Initialize the RecyclerView adapter, MasterListAdapter
-        mAdapter = new MasterListAdapter(listener, mContext);
+        // Initialize the RecyclerView adapter, RecipesAdapter
+        mAdapter = new RecipesAdapter(listener, mContext);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);

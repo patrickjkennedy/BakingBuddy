@@ -19,11 +19,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.StepsActivity"
+            android:name=".ui.OverviewActivity"
             android:parentActivityName=".ui.RecipesActivity" />
         <activity
             android:name=".ui.DetailActivity"
-            android:parentActivityName=".ui.StepsActivity" />
+            android:parentActivityName=".ui.OverviewActivity" />
     </application>
 
 </manifest>

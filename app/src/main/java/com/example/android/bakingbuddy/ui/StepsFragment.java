@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.bakingbuddy.R;
-import com.example.android.bakingbuddy.data.OverviewAdapter;
+import com.example.android.bakingbuddy.data.StepsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
 import com.example.android.bakingbuddy.model.Step;
 
@@ -20,21 +20,21 @@ import com.example.android.bakingbuddy.model.Step;
  * Created by pkennedy on 3/22/18.
  */
 
-public class OverviewFragment extends Fragment {
+public class StepsFragment extends Fragment {
 
     // Context
     private Context mContext;
 
     // RecyclerView
     private RecyclerView mRecyclerView;
-    private OverviewAdapter mAdapter;
+    private StepsAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     // Recipe
     private Recipe mRecipe;
 
     // Mandatory empty constructor
-    public OverviewFragment(){
+    public StepsFragment(){
     }
 
     // Inflates the fragment layout
@@ -49,7 +49,7 @@ public class OverviewFragment extends Fragment {
         mContext = getActivity();
 
         // Inflate the Overview fragment layout
-        View rootView = inflater.inflate(R.layout.fragment_overview, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
 
         // Recyclerview
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_overview);
@@ -59,7 +59,7 @@ public class OverviewFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Setup click listener
-        OverviewAdapter.OverviewAdapterClickListener listener = new OverviewAdapter.OverviewAdapterClickListener(){
+        StepsAdapter.OverviewAdapterClickListener listener = new StepsAdapter.OverviewAdapterClickListener(){
             @Override
             public void onClick(View view, Step step) {
                 Class destinationClass = DetailActivity.class;
@@ -74,8 +74,8 @@ public class OverviewFragment extends Fragment {
             }
         };
 
-        // Initialize the Recyclerview adapter, OverviewAdapter
-        mAdapter = new OverviewAdapter(listener, mContext);
+        // Initialize the Recyclerview adapter, StepsAdapter
+        mAdapter = new StepsAdapter(listener, mContext);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
@@ -93,7 +93,7 @@ public class OverviewFragment extends Fragment {
         super.onResume();
 
         // Set the title bar
-        ((StepsActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        ((OverviewActivity) getActivity()).setActionBarTitle(mRecipe.getName());
     }
 
     @Override
