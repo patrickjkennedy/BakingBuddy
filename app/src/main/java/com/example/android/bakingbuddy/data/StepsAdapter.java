@@ -43,7 +43,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
         public ViewHolder(View itemView, OverviewAdapterClickListener listener){
             super(itemView);
-            shortDescription = (TextView) itemView.findViewById(R.id.tv_overview_item_shortDescription);
+            shortDescription = (TextView) itemView.findViewById(R.id.tv_step_item_shortDescription);
             mListener = listener;
             itemView.setOnClickListener(this);
         }

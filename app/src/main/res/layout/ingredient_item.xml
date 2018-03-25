@@ -6,18 +6,18 @@
     android:layout_width="wrap_content" android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tv_step_item_shortDescription"
+        android:id="@+id/tv_ingredient_item_ingredient"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textSize="18sp"
-        tools:text="Eat all of the food!"/>
+        tools:text="24 K Lard"/>
 
     <View
         android:background="@color/colorPrimaryDark"
         android:layout_width = "match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/tv_step_item_shortDescription"
+        android:layout_below="@id/tv_ingredient_item_ingredient"
         />
 
 </RelativeLayout>

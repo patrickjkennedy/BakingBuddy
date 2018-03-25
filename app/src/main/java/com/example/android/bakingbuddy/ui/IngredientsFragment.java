@@ -10,31 +10,29 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.android.bakingbuddy.R;
-import com.example.android.bakingbuddy.data.StepsAdapter;
+import com.example.android.bakingbuddy.data.IngredientsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
-import com.example.android.bakingbuddy.model.Step;
 
 /**
- * Created by pkennedy on 3/22/18.
+ * Created by pkennedy on 3/25/18.
  */
 
-public class StepsFragment extends Fragment {
+public class IngredientsFragment extends Fragment{
 
     // Context
     private Context mContext;
 
     // RecyclerView
     private RecyclerView mRecyclerView;
-    private StepsAdapter mAdapter;
+    private IngredientsAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     // Recipe
     private Recipe mRecipe;
 
     // Mandatory empty constructor
-    public StepsFragment(){
+    public IngredientsFragment(){
     }
 
     // Inflates the fragment layout
@@ -49,39 +47,23 @@ public class StepsFragment extends Fragment {
         mContext = getActivity();
 
         // Inflate the Overview fragment layout
-        View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
 
         // Recyclerview
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_steps);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_ingredients);
 
         // Create a linear layout manager and set it
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // Setup click listener
-        StepsAdapter.OverviewAdapterClickListener listener = new StepsAdapter.OverviewAdapterClickListener(){
-            @Override
-            public void onClick(View view, Step step) {
-                Class destinationClass = DetailActivity.class;
-                Intent intent = new Intent(mContext, destinationClass);
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("step", step);
-                bundle.putSerializable("recipe", mRecipe);
-
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);
-            }
-        };
-
-        // Initialize the Recyclerview adapter, StepsAdapter
-        mAdapter = new StepsAdapter(listener, mContext);
+        // Initialize the Recyclerview adapter, IngredientsAdapter
+        mAdapter = new IngredientsAdapter(mContext);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
 
-        // Pass in the recipe to extract the steps
-        mAdapter.setSteps(mRecipe);
+        // Pass in the recipe to extract the ingredients
+        mAdapter.setIngredients(mRecipe);
 
         return rootView;
     }

@@ -18,8 +18,11 @@ public class Ingredient implements Serializable {
         return measure;
     }
 
-    public String getIngredient(){
-        return ingredient;
+    public String getIngredient() { return ingredient; }
+
+    @Override
+    public String toString() {
+        return quantity + " " + measure + " " + ingredient;
     }
 
 }
