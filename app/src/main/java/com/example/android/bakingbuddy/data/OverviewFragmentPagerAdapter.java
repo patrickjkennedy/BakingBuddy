@@ -12,6 +12,9 @@ import com.example.android.bakingbuddy.ui.StepsFragment;
 
 public class OverviewFragmentPagerAdapter extends FragmentPagerAdapter {
 
+    final int PAGE_COUNT = 2;
+    private String tabTitles[] = new String[] { "Ingredients", "Steps"};
+
     public OverviewFragmentPagerAdapter(FragmentManager fragmentManager){
         super(fragmentManager);
     }
@@ -27,6 +30,12 @@ public class OverviewFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return PAGE_COUNT;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        // Generate title based on item position
+        return tabTitles[position];
     }
 }
