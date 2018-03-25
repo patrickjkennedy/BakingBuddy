@@ -74,6 +74,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
     public void setSteps(Recipe recipe){
         mSteps = recipe.getSteps();
+        mSteps.remove(0);
         notifyDataSetChanged();
     }
 }

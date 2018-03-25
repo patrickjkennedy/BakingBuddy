@@ -66,8 +66,6 @@ public class DetailFragment extends Fragment {
         mStep = (Step) intent.getSerializableExtra("step");
         mRecipe = (Recipe) intent.getSerializableExtra("recipe");
 
-        Log.d("DetailActivity", "Recipe name from startActivityFromResult: " + mRecipe.getName());
-
         // Inflate the fragment_detail layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
