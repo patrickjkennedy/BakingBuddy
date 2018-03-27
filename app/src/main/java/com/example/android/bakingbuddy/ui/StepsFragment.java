@@ -84,15 +84,15 @@ public class StepsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Setup click listener
-        StepsAdapter.OverviewAdapterClickListener listener = new StepsAdapter.OverviewAdapterClickListener(){
+        StepsAdapter.StepsAdapterClickListener listener = new StepsAdapter.StepsAdapterClickListener(){
             @Override
-            public void onClick(View view, Step step) {
+            public void onClick(View view, int position) {
                 Class destinationClass = DetailActivity.class;
                 Intent intent = new Intent(mContext, destinationClass);
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("step", step);
                 bundle.putSerializable("recipe", mRecipe);
+                bundle.putInt("position", position);
 
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 1);

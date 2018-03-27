@@ -19,7 +19,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
     private Context mContext;
 
-    private OverviewAdapterClickListener mListener;
+    private StepsAdapterClickListener mListener;
 
     //ArrayList of Steps
     private ArrayList<Step> mSteps = new ArrayList<>();
@@ -28,11 +28,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
      * The interface for custom RecyclerViewClickListener
      *
      */
-    public interface OverviewAdapterClickListener {
-        void onClick(View view, Step step);
+    public interface StepsAdapterClickListener {
+        void onClick(View view, int position);
     }
 
-    public StepsAdapter(OverviewAdapterClickListener listener, Context context){
+    public StepsAdapter(StepsAdapterClickListener listener, Context context){
         this.mListener = listener;
         this.mContext = context;
     }
@@ -41,7 +41,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
         private TextView shortDescription;
 
-        public ViewHolder(View itemView, OverviewAdapterClickListener listener){
+        public ViewHolder(View itemView, StepsAdapterClickListener listener){
             super(itemView);
             shortDescription = (TextView) itemView.findViewById(R.id.tv_step_item_shortDescription);
             mListener = listener;
@@ -50,7 +50,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
         @Override
         public void onClick(View view) {
-            mListener.onClick(view, mSteps.get(getAdapterPosition()));
+            mListener.onClick(view, getAdapterPosition());
         }
     }
 

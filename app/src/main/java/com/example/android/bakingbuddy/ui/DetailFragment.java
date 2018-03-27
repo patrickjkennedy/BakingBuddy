@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.model.Recipe;
@@ -28,6 +29,8 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.ArrayList;
+
 /**
  * Created by pkennedy on 3/24/18.
  */
@@ -37,11 +40,17 @@ public class DetailFragment extends Fragment {
     // Context
     private Context mContext;
 
-    // Step
+    // Current Step
     private Step mStep;
+
+    // Current Step arraylist position
+    private int mPosition;
 
     // Recipe
     private Recipe mRecipe;
+
+    // Steps in the Recipe
+    private ArrayList<Step> mSteps = new ArrayList<>();
 
     // SimpleExoPlayerView
     private SimpleExoPlayerView mPlayerView;
@@ -56,6 +65,9 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        //TODO: Need to add check for previous button - if position = 0, hide button
+        //TODO: Need to add check for next button - if position = size-1, hide button
+
         // Adding this allows the Fragment to call onOptionsItemSelected correctly
         setHasOptionsMenu(true);
 
@@ -63,8 +75,10 @@ public class DetailFragment extends Fragment {
 
         // Get the data from the intent that started this activity
         Intent intent = getActivity().getIntent();
-        mStep = (Step) intent.getSerializableExtra("step");
         mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+        mPosition = (Integer) intent.getIntExtra("position",0);
+        mSteps = mRecipe.getSteps();
+        mStep = mSteps.get(mPosition);
 
         // Inflate the fragment_detail layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -141,5 +155,11 @@ public class DetailFragment extends Fragment {
         super.onResume();
         // Set the title bar
         ((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+    }
+
+    public void previousButton(View view){
+        //TODO: position --1;
+        // Reload fragment
+
     }
 }
