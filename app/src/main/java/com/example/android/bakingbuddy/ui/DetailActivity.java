@@ -2,6 +2,8 @@ package com.example.android.bakingbuddy.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.example.android.bakingbuddy.R;
 

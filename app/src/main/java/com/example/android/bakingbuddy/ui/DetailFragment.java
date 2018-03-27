@@ -35,7 +35,7 @@ import java.util.ArrayList;
  * Created by pkennedy on 3/24/18.
  */
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements View.OnClickListener{
 
     // Context
     private Context mContext;
@@ -58,15 +58,18 @@ public class DetailFragment extends Fragment {
     // SimpleExoPlayer
     private SimpleExoPlayer mExoPlayer;
 
+    // Previous Button
+    private Button mPreviousButton;
+
+    // Next Button
+    private Button mNextButton;
+
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        //TODO: Need to add check for previous button - if position = 0, hide button
-        //TODO: Need to add check for next button - if position = size-1, hide button
 
         // Adding this allows the Fragment to call onOptionsItemSelected correctly
         setHasOptionsMenu(true);
@@ -86,6 +89,17 @@ public class DetailFragment extends Fragment {
         // Get a reference to the SimpleExoPlayerView
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.player_view);
 
+        // Get a reference to the Previous and Next buttons
+        mPreviousButton = (Button) rootView.findViewById(R.id.btn_previous);
+        mNextButton = (Button) rootView.findViewById(R.id.btn_next);
+
+        // Set on click listener on buttons
+        mPreviousButton.setOnClickListener(this);
+        mNextButton.setOnClickListener(this);
+
+        // Display buttons
+        displayButtons(mPosition);
+
         // Initialize the player
         initializePlayer(mStep.getVideoURL());
 
@@ -98,6 +112,22 @@ public class DetailFragment extends Fragment {
         description.setText(mStep.getDescription());
 
         return rootView;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_previous:
+                mPosition--;
+                Log.d("DetailActivity", "New position: " + mPosition);
+                //TODO: update the data
+                break;
+            case R.id.btn_next:
+                mPosition++;
+                Log.d("DetailActivity", "New position: " + mPosition);
+                //TODO: update the data
+                break;
+        }
     }
 
     private void initializePlayer(String mediaUrl) {
@@ -157,9 +187,16 @@ public class DetailFragment extends Fragment {
         ((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
     }
 
-    public void previousButton(View view){
-        //TODO: position --1;
-        // Reload fragment
-
+    private void displayButtons(int position){
+        if(position == 0){
+            mPreviousButton.setVisibility(View.INVISIBLE);
+            mNextButton.setVisibility(View.VISIBLE);
+        } else if(position == mSteps.size() - 1){
+            mPreviousButton.setVisibility(View.VISIBLE);
+            mNextButton.setVisibility(View.INVISIBLE);
+        } else {
+            mPreviousButton.setVisibility(View.VISIBLE);
+            mNextButton.setVisibility(View.VISIBLE);
+        }
     }
 }
