@@ -119,15 +119,20 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         switch (view.getId()) {
             case R.id.btn_previous:
                 mPosition--;
-                Log.d("DetailActivity", "New position: " + mPosition);
-                //TODO: update the data
                 break;
             case R.id.btn_next:
                 mPosition++;
-                Log.d("DetailActivity", "New position: " + mPosition);
-                //TODO: update the data
                 break;
         }
+        Class destinationClass = DetailActivity.class;
+        Intent intent = new Intent(mContext, destinationClass);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("recipe", mRecipe);
+        bundle.putInt("position", mPosition);
+
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 1);
     }
 
     private void initializePlayer(String mediaUrl) {
