@@ -13,7 +13,7 @@ import com.example.android.bakingbuddy.ui.StepsFragment;
 public class OverviewFragmentPagerAdapter extends FragmentPagerAdapter {
 
     final int PAGE_COUNT = 2;
-    private String tabTitles[] = new String[] { "Ingredients", "Steps"};
+    private String tabTitles[] = new String[] { "Steps", "Ingredients"};
 
     public OverviewFragmentPagerAdapter(FragmentManager fragmentManager){
         super(fragmentManager);
@@ -22,9 +22,9 @@ public class OverviewFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position == 0) {
-            return new IngredientsFragment();
-        } else {
             return new StepsFragment();
+        } else {
+            return new IngredientsFragment();
         }
     }
 

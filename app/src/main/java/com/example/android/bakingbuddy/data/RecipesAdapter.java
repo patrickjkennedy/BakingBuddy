@@ -12,6 +12,9 @@ import com.example.android.bakingbuddy.model.Recipe;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 /**
  * Created by pkennedy on 3/18/18.
@@ -45,15 +48,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public ImageView itemImage;
-        public TextView itemName;
-        public TextView itemServes;
+        @BindView(R.id.iv_master_list_item) ImageView itemImage;
+        @BindView(R.id.tv_master_list_item_recipe_name) TextView itemName;
+        @BindView(R.id.tv_master_list_item_recipe_serves) TextView itemServes;
 
         public ViewHolder(View itemView, MasterListAdapterClickListener listener){
             super(itemView);
-            itemImage = (ImageView) itemView.findViewById(R.id.iv_master_list_item);
-            itemName = (TextView) itemView.findViewById(R.id.tv_master_list_item_recipe_name);
-            itemServes = (TextView) itemView.findViewById(R.id.tv_master_list_item_recipe_serves);
+            ButterKnife.bind(this, itemView);
             mListener = listener;
             itemView.setOnClickListener(this);
         }

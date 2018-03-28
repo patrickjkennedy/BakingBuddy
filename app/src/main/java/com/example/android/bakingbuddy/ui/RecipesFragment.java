@@ -17,6 +17,9 @@ import com.example.android.bakingbuddy.data.RecipesAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
 import com.example.android.bakingbuddy.service.RecipeClient;
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,15 +36,16 @@ public class RecipesFragment extends Fragment{
     private Context mContext;
 
     // RecyclerView
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_master_list) RecyclerView mRecyclerView;
+
+    // RecipesAdapter
     private RecipesAdapter mAdapter;
-    private LinearLayoutManager mLayoutManager;
 
     // TextView for Error Messaging
-    private TextView mErrorTextView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorTextView;
 
     // ProgressBar for Loading
-    private ProgressBar mLoadingIndicator;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
     // Mandatory empty constructor
     public RecipesFragment(){
@@ -56,19 +60,17 @@ public class RecipesFragment extends Fragment{
 
         final View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
 
-        // Recyclerview
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_master_list);
+        // Bind Butterknife variables
+        ButterKnife.bind(this, rootView);
 
-        // TextView for Error Messaging
-        mErrorTextView = (TextView) rootView.findViewById(R.id.tv_error_message_display);
-
-        // ProgressBar for Loading Indicator
-        mLoadingIndicator = (ProgressBar) rootView.findViewById(R.id.pb_loading_indicator);
-
+        // Set to true as recipes are fixed
         mRecyclerView.setHasFixedSize(true);
 
-        // Creating a linear layout manager
-        mLayoutManager = new LinearLayoutManager(mContext);
+        // Display the loading icon
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+
+        // Create a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Setup click listener
@@ -114,11 +116,16 @@ public class RecipesFragment extends Fragment{
                 // Pass the recipes from the response into the adapter
                 mAdapter.setRecipes(recipes);
 
+                // Hide the loading icon
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-                Toast.makeText(getActivity(), "Error in Network call", Toast.LENGTH_SHORT).show();
+                // Hide the loading icon
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                // Display the error message
+                mErrorTextView.setVisibility(View.VISIBLE);
             }
         });
 
