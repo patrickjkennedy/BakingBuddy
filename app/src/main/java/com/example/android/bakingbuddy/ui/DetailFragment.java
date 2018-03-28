@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -76,11 +77,23 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
         mContext = getContext();
 
-        // Get the data from the intent that started this activity
+        // Get the data from the intent that started this fragment
         Intent intent = getActivity().getIntent();
         mRecipe = (Recipe) intent.getSerializableExtra("recipe");
-        mPosition = (Integer) intent.getIntExtra("position",0);
+
+        if(getArguments() == null){
+            mPosition = (Integer) intent.getIntExtra("position",0);
+        }
+
         mSteps = mRecipe.getSteps();
+
+        // Check to see if the fragment was started by a previous fragment
+        if(getArguments()!=null){
+            mPosition = getArguments().getInt("position");
+        }
+
+        Log.d("DetailActivity", "Position: " + mPosition);
+
         mStep = mSteps.get(mPosition);
 
         // Inflate the fragment_detail layout
@@ -124,15 +137,19 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
                 mPosition++;
                 break;
         }
-        Class destinationClass = DetailActivity.class;
-        Intent intent = new Intent(mContext, destinationClass);
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("recipe", mRecipe);
-        bundle.putInt("position", mPosition);
+        DetailFragment detailFragment = new DetailFragment();
 
-        intent.putExtras(bundle);
-        startActivityForResult(intent, 1);
+        Bundle args = new Bundle();
+        args.putInt("position", mPosition);
+
+        detailFragment.setArguments(args);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.detail_fragment, detailFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void initializePlayer(String mediaUrl) {

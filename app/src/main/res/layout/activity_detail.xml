@@ -3,4 +3,5 @@
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:id="@+id/detail_fragment"
-android:name="com.example.android.bakingbuddy.ui.DetailFragment" />
+android:name="com.example.android.bakingbuddy.ui.DetailFragment"
+    android:tag="DetailFragment" />
