@@ -11,6 +11,9 @@ import com.example.android.bakingbuddy.model.Recipe;
 import com.example.android.bakingbuddy.model.Step;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by pkennedy on 3/22/18.
  */
@@ -39,11 +42,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private TextView shortDescription;
+        @BindView(R.id.tv_step_item_shortDescription) TextView shortDescription;
 
         public ViewHolder(View itemView, StepsAdapterClickListener listener){
             super(itemView);
-            shortDescription = (TextView) itemView.findViewById(R.id.tv_step_item_shortDescription);
+            ButterKnife.bind(this, itemView);
             mListener = listener;
             itemView.setOnClickListener(this);
         }

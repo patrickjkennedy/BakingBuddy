@@ -14,6 +14,9 @@ import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.IngredientsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by pkennedy on 3/25/18.
  */
@@ -24,7 +27,7 @@ public class IngredientsFragment extends Fragment{
     private Context mContext;
 
     // RecyclerView
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_ingredients) RecyclerView mRecyclerView;
     private IngredientsAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
@@ -49,8 +52,8 @@ public class IngredientsFragment extends Fragment{
         // Inflate the Overview fragment layout
         View rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
 
-        // Recyclerview
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_ingredients);
+        // Bind the data
+        ButterKnife.bind(this, rootView);
 
         // Create a linear layout manager and set it
         mLayoutManager = new LinearLayoutManager(mContext);

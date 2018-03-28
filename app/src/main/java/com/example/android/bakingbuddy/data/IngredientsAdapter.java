@@ -11,6 +11,9 @@ import com.example.android.bakingbuddy.model.Ingredient;
 import com.example.android.bakingbuddy.model.Recipe;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by pkennedy on 3/25/18.
  */
@@ -27,11 +30,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView ingredient;
+        @BindView(R.id.tv_ingredient_item_ingredient) TextView ingredient;
 
         public ViewHolder(View itemView){
             super(itemView);
-            ingredient = (TextView) itemView.findViewById(R.id.tv_ingredient_item_ingredient);
+            ButterKnife.bind(this, itemView);
         }
     }
 

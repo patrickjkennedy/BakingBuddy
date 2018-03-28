@@ -29,6 +29,9 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by pkennedy on 3/22/18.
  */
@@ -39,15 +42,19 @@ public class StepsFragment extends Fragment {
     private Context mContext;
 
     // RecyclerView
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_steps) RecyclerView mRecyclerView;
+
+    // StepsAdapter
     private StepsAdapter mAdapter;
+
+    // LinearLayoutManager
     private LinearLayoutManager mLayoutManager;
 
     // Recipe
     private Recipe mRecipe;
 
     // SimpleExoPlayerView
-    private SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.player_view_steps) SimpleExoPlayerView mPlayerView;
 
     // SimpleExoPlayer
     private SimpleExoPlayer mExoPlayer;
@@ -70,14 +77,11 @@ public class StepsFragment extends Fragment {
         // Inflate the Overview fragment layout
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
 
-        // Get a reference to the SimpleExoPlayerView
-        mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.player_view_steps);
+        // Bind data
+        ButterKnife.bind(this, rootView);
 
         // Initialize the player
         initializePlayer(mRecipe.getSteps().get(0).getVideoURL());
-
-        // Recyclerview
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_steps);
 
         // Create a linear layout manager and set it
         mLayoutManager = new LinearLayoutManager(mContext);

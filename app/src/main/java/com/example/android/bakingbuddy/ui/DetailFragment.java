@@ -32,6 +32,9 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by pkennedy on 3/24/18.
  */
@@ -54,16 +57,22 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     private ArrayList<Step> mSteps = new ArrayList<>();
 
     // SimpleExoPlayerView
-    private SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.player_view) SimpleExoPlayerView mPlayerView;
 
     // SimpleExoPlayer
     private SimpleExoPlayer mExoPlayer;
 
     // Previous Button
-    private Button mPreviousButton;
+    @BindView(R.id.btn_previous) Button mPreviousButton;
 
     // Next Button
-    private Button mNextButton;
+    @BindView(R.id.btn_next) Button mNextButton;
+
+    // Short Description
+    @BindView(R.id.tv_detail_short_description) TextView shortDescription;
+
+    // Description
+    @BindView(R.id.tv_detail_description) TextView description;
 
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
@@ -92,19 +101,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             mPosition = getArguments().getInt("position");
         }
 
-        Log.d("DetailActivity", "Position: " + mPosition);
-
         mStep = mSteps.get(mPosition);
 
         // Inflate the fragment_detail layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        // Get a reference to the SimpleExoPlayerView
-        mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.player_view);
-
-        // Get a reference to the Previous and Next buttons
-        mPreviousButton = (Button) rootView.findViewById(R.id.btn_previous);
-        mNextButton = (Button) rootView.findViewById(R.id.btn_next);
+        // Bind the data
+        ButterKnife.bind(this, rootView);
 
         // Set on click listener on buttons
         mPreviousButton.setOnClickListener(this);
@@ -116,13 +119,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         // Initialize the player
         initializePlayer(mStep.getVideoURL());
 
-        // Get a reference to the short description and bind the data
-        TextView shortDescription = (TextView) rootView.findViewById(R.id.tv_detail_short_description);
-        shortDescription.setText(mStep.getShortDescription());
-
-        // Get a reference to the description and bind the data
-        TextView description = (TextView) rootView.findViewById(R.id.tv_detail_description);
+        // Bind the description data to the respective textviews
         description.setText(mStep.getDescription());
+        shortDescription.setText(mStep.getShortDescription());
 
         return rootView;
     }
