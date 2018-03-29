@@ -11,11 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.StepsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
-import com.example.android.bakingbuddy.model.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -28,7 +26,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -59,6 +56,9 @@ public class StepsFragment extends Fragment {
     // SimpleExoPlayer
     private SimpleExoPlayer mExoPlayer;
 
+    // Video URL
+    private String mVideoUrl;
+
     // Mandatory empty constructor
     public StepsFragment(){
     }
@@ -67,21 +67,21 @@ public class StepsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // Context
+        mContext = getContext();
+
         // Get the recipe from the intent that started the activity
         Intent intent = getActivity().getIntent();
         mRecipe = (Recipe) intent.getSerializableExtra("recipe");
 
-        // Context
-        mContext = getActivity();
+        // Extract overview mVideoUrl
+        mVideoUrl = mRecipe.getSteps().get(0).getVideoURL();
 
         // Inflate the Overview fragment layout
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
 
         // Bind data
         ButterKnife.bind(this, rootView);
-
-        // Initialize the player
-        initializePlayer(mRecipe.getSteps().get(0).getVideoURL());
 
         // Create a linear layout manager and set it
         mLayoutManager = new LinearLayoutManager(mContext);
@@ -112,15 +112,20 @@ public class StepsFragment extends Fragment {
         // Pass in the recipe to extract the steps
         mAdapter.setSteps(mRecipe);
 
+        // Initialize the player
+        initializePlayer(mVideoUrl);
+
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         // Set the title bar
         ((OverviewActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+
+        // Reinitialize the player
+        initializePlayer(mVideoUrl);
     }
 
     @Override
@@ -154,9 +159,10 @@ public class StepsFragment extends Fragment {
     }
 
     private void releasePlayer(){
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if (null != mExoPlayer) {
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 
     @Override
@@ -164,4 +170,11 @@ public class StepsFragment extends Fragment {
         super.onDestroy();
         releasePlayer();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
 }
