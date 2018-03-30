@@ -5,12 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
@@ -31,6 +35,7 @@ import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 
 /**
  * Created by pkennedy on 3/24/18.
@@ -60,16 +65,26 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     private SimpleExoPlayer mExoPlayer;
 
     // Previous Button
+    @Nullable
     @BindView(R.id.btn_previous) Button mPreviousButton;
 
     // Next Button
+    @Nullable
     @BindView(R.id.btn_next) Button mNextButton;
 
     // Short Description
+    @Nullable
     @BindView(R.id.tv_detail_short_description) TextView shortDescription;
 
     // Description
+    @Nullable
     @BindView(R.id.tv_detail_description) TextView description;
+
+    // Position Key
+    private String POS_KEY;
+
+    // Orientation
+    private int ORIENTATION;
 
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
@@ -77,6 +92,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        // Determine orientation of device
+        ORIENTATION = getResources().getConfiguration().orientation;
+
+        // Inflate the fragment_detail layout
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         // Adding this allows the Fragment to call onOptionsItemSelected correctly
         setHasOptionsMenu(true);
@@ -100,26 +121,29 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
         mStep = mSteps.get(mPosition);
 
-        // Inflate the fragment_detail layout
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-
         // Bind the data
         ButterKnife.bind(this, rootView);
-
-        // Set on click listener on buttons
-        mPreviousButton.setOnClickListener(this);
-        mNextButton.setOnClickListener(this);
-
-        // Display buttons
-        displayButtons(mPosition);
 
         // Initialize the player
         initializePlayer(mStep.getVideoURL());
 
-        // Bind the description data to the respective textviews
-        description.setText(mStep.getDescription());
-        shortDescription.setText(mStep.getShortDescription());
+        // Check if coming from saved instance state, and track to that position
+        if(savedInstanceState != null){
+            mExoPlayer.seekTo(savedInstanceState.getLong(POS_KEY));
+        }
 
+        if(ORIENTATION == 1) {
+            // Set on click listener on buttons
+            mPreviousButton.setOnClickListener(this);
+            mNextButton.setOnClickListener(this);
+
+            // Display buttons
+            displayButtons(mPosition);
+
+            // Bind the description data to the respective textviews
+            description.setText(mStep.getDescription());
+            shortDescription.setText(mStep.getShortDescription());
+        }
         return rootView;
     }
 
@@ -215,5 +239,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             mPreviousButton.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        long position = mExoPlayer.getCurrentPosition();
+        outState.putLong(POS_KEY, position);
     }
 }

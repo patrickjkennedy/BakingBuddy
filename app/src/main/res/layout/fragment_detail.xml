@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Fragment layout that displays the details for a step in a recipe-->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/ll_detail"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="0dp"/>
+        android:layout_margin="0dp"
+        android:layout_weight="1" />
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cv_detail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/cv_detail"
         android:layout_margin="5dp"
+        android:layout_weight="1"
         app:cardBackgroundColor="@color/cardview_light_background"
         app:cardCornerRadius="12dp"
         app:cardElevation="3dp"
@@ -33,46 +32,41 @@
             android:padding="16dp">
 
             <TextView
-                android:layout_alignParentTop="true"
+                android:id="@+id/tv_detail_short_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_detail_short_description"
+                android:layout_alignParentTop="true"
                 android:textSize="20sp"
-                tools:text="Short Description"
-                android:textStyle="bold|italic"/>
+                android:textStyle="bold|italic"
+                tools:text="Short Description" />
 
             <TextView
-                android:layout_below="@+id/tv_detail_short_description"
+                android:id="@+id/tv_detail_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_detail_description"
+                android:layout_below="@+id/tv_detail_short_description"
                 android:textSize="18sp"
-                tools:text="3. Press the cookie crumb mixture into the prepared pie pan and bake for 12 minutes. Let crust cool to room temperature."/>
+                tools:text="3. Press the cookie crumb mixture into the prepared pie pan and bake for 12 minutes. Let crust cool to room temperature." />
 
             <Button
                 android:id="@+id/btn_previous"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Previous"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true"
+                android:text="Previous" />
 
             <Button
                 android:id="@+id/btn_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Next"
                 android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
+                android:text="Next" />
         </RelativeLayout>
 
 
-
-
     </android.support.v7.widget.CardView>
-
-
-
 
 
 </LinearLayout>
