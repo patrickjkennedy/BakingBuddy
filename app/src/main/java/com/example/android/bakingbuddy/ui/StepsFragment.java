@@ -59,6 +59,9 @@ public class StepsFragment extends Fragment {
     // Video URL
     private String mVideoUrl;
 
+    // Current position (for OnResume)
+    private long mCurrentPosition;
+
     // Mandatory empty constructor
     public StepsFragment(){
     }
@@ -124,8 +127,15 @@ public class StepsFragment extends Fragment {
         // Set the title bar
         ((OverviewActivity) getActivity()).setActionBarTitle(mRecipe.getName());
 
-        // Reinitialize the player
-        initializePlayer(mVideoUrl);
+        // Initialize the player
+        if(!mVideoUrl.isEmpty()){
+            initializePlayer(mVideoUrl);
+            mPlayerView.setVisibility(View.VISIBLE);
+        }
+
+        if(mCurrentPosition != 0){
+            mExoPlayer.seekTo(mCurrentPosition);
+        }
     }
 
     @Override
@@ -172,9 +182,17 @@ public class StepsFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        releasePlayer();
+        if(mExoPlayer != null){
+            mCurrentPosition = mExoPlayer.getCurrentPosition();
+        }
     }
 
 }

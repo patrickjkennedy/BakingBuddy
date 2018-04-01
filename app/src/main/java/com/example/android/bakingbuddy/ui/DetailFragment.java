@@ -90,6 +90,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     // Orientation
     private int ORIENTATION;
 
+    // Current position (for OnResume)
+    private long mCurrentPosition;
+
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
     }
@@ -253,6 +256,24 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         super.onResume();
         // Set the title bar
         ((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+
+        // Initialize the player
+        if(!mVideoUrl.isEmpty()){
+            initializePlayer(mVideoUrl);
+            mPlayerView.setVisibility(View.VISIBLE);
+        }
+
+        if(mCurrentPosition != 0){
+            mExoPlayer.seekTo(mCurrentPosition);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mExoPlayer != null){
+            mCurrentPosition = mExoPlayer.getCurrentPosition();
+        }
     }
 
     private void displayButtons(int position){
@@ -271,8 +292,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d("DetailActivity", "mExoplayer: " + mExoPlayer);
-        long position = mExoPlayer.getCurrentPosition();
-        outState.putLong(POS_KEY, position);
+        if(mExoPlayer != null){
+            long position = mExoPlayer.getCurrentPosition();
+            outState.putLong(POS_KEY, position);
+        }
     }
 }
