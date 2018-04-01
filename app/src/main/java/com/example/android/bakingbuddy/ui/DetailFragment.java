@@ -100,11 +100,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // Determine orientation of device
-        ORIENTATION = getResources().getConfiguration().orientation;
-
         // Inflate the fragment_detail layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        // Determine orientation of device
+        ORIENTATION = getResources().getConfiguration().orientation;
 
         // Adding this allows the Fragment to call onOptionsItemSelected correctly
         setHasOptionsMenu(true);
@@ -175,7 +175,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
         // If ExoPlayer is initialized, release
         if(mExoPlayer != null){
-            releasePlayer();
+           releasePlayer();
         }
 
         // Create new fragment
@@ -191,6 +191,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         transaction.replace(R.id.detail_fragment, detailFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        Log.d("DetailActivity", "mExoPlayer: " + mExoPlayer);
     }
 
     private void initializePlayer(String mediaUrl) {
