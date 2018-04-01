@@ -3,6 +3,7 @@ package com.example.android.bakingbuddy.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -124,8 +125,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         // Bind the data
         ButterKnife.bind(this, rootView);
 
-        // Initialize the player
-        initializePlayer(mStep.getVideoURL());
+        // Initialize the player if url is not empty
+        if(!mStep.getVideoURL().isEmpty()){
+            initializePlayer(mStep.getVideoURL());
+        } else {
+            mPlayerView.setVisibility(View.GONE);
+        }
 
         // Check if coming from saved instance state, and track to that position
         if(savedInstanceState != null){
@@ -179,6 +184,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
+
             // Prepare the media source
             String userAgent = Util.getUserAgent(mContext, "BakingBuddy");
             MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(mediaUrl),

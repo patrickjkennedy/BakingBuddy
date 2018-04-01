@@ -20,7 +20,7 @@ public class DetailActivity extends AppCompatActivity {
         ORIENTATION = getResources().getConfiguration().orientation;
 
         if(ORIENTATION == 2){
-            setTheme(android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+            setTheme(android.R.style.Theme_NoTitleBar_Fullscreen);
         }
 
         super.onCreate(savedInstanceState);
