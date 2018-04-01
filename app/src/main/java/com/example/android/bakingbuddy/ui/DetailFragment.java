@@ -81,6 +81,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @BindView(R.id.tv_detail_description) TextView description;
 
+    // Video URL
+    private String mVideoUrl;
+
     // Position Key
     private String POS_KEY;
 
@@ -113,6 +116,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             mPosition = (Integer) intent.getIntExtra("position",0);
         }
 
+        // Get the steps from the recipe
         mSteps = mRecipe.getSteps();
 
         // Check to see if the fragment was started by a previous fragment
@@ -120,16 +124,19 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             mPosition = getArguments().getInt("position");
         }
 
+        // Get the step from position in the array
         mStep = mSteps.get(mPosition);
+
+        // Get the video url from the step
+        mVideoUrl = mStep.getVideoURL();
 
         // Bind the data
         ButterKnife.bind(this, rootView);
 
-        // Initialize the player if url is not empty
-        if(!mStep.getVideoURL().isEmpty()){
-            initializePlayer(mStep.getVideoURL());
-        } else {
-            mPlayerView.setVisibility(View.GONE);
+        // If videoUrl is not empty, initialize the player and display
+        if(!mVideoUrl.isEmpty()){
+            initializePlayer(mVideoUrl);
+            mPlayerView.setVisibility(View.VISIBLE);
         }
 
         // Check if coming from saved instance state, and track to that position
@@ -163,6 +170,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
                 break;
         }
 
+        // If ExoPlayer is initialized, release
+        if(mExoPlayer != null){
+            releasePlayer();
+        }
+
+        // Create new fragment
         DetailFragment detailFragment = new DetailFragment();
 
         Bundle args = new Bundle();
@@ -198,14 +211,22 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     }
 
     private void releasePlayer(){
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if(mExoPlayer != null){
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        releasePlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         releasePlayer();
     }
 
@@ -250,6 +271,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d("DetailActivity", "mExoplayer: " + mExoPlayer);
         long position = mExoPlayer.getCurrentPosition();
         outState.putLong(POS_KEY, position);
     }
