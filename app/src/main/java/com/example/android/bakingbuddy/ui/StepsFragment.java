@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +63,9 @@ public class StepsFragment extends Fragment {
     // Current position (for OnResume)
     private long mCurrentPosition;
 
+    // Two Pane Mode Boolean
+    private boolean mTwoPane = false;
+
     // Mandatory empty constructor
     public StepsFragment(){
     }
@@ -70,6 +73,9 @@ public class StepsFragment extends Fragment {
     // Inflates the fragment layout
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        // Check to see if the fragment was started in Two Pane Mode
+        mTwoPane = getArguments().getBoolean("mTwoPane");
 
         // Context
         mContext = getContext();
@@ -95,15 +101,32 @@ public class StepsFragment extends Fragment {
         StepsAdapter.StepsAdapterClickListener listener = new StepsAdapter.StepsAdapterClickListener(){
             @Override
             public void onClick(View view, int position) {
-                Class destinationClass = DetailActivity.class;
-                Intent intent = new Intent(mContext, destinationClass);
+                if (mTwoPane){
+                    // Create the correct detail fragment and add it to the screen
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    DetailFragment detailFragment = new DetailFragment();
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("recipe", mRecipe);
-                bundle.putInt("position", position);
+                    // Pass required data to the DetailFragment in an arguments bundle
+                    Bundle args = new Bundle();
+                    args.putBoolean("mTwoPane", mTwoPane);
+                    args.putInt("mPosition", position);
+                    args.putSerializable("mRecipe", mRecipe);
+                    detailFragment.setArguments(args);
 
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);
+                    // Add the fragment to its container using a transaction
+                    fragmentManager.beginTransaction().replace(R.id.overview_detail_container, detailFragment).commit();
+
+                } else {
+                    Class destinationClass = DetailActivity.class;
+                    Intent intent = new Intent(mContext, destinationClass);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("recipe", mRecipe);
+                    bundle.putInt("position", position);
+
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, 1);
+                }
             }
         };
 
@@ -118,8 +141,6 @@ public class StepsFragment extends Fragment {
 
         // Initialize the player
         initializePlayer(mVideoUrl);
-
-        Log.d("OverviewActivity", "Steps: " + mRecipe.getSteps());
 
         return rootView;
     }

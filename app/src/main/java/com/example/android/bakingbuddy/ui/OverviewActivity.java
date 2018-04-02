@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.OverviewFragmentPagerAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
@@ -44,18 +42,16 @@ public class OverviewActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 StepsFragment stepsFragment = new StepsFragment();
 
+                // Pass mTwoPane = true to the StepsFragment in an arguments bundle
+                Bundle args = new Bundle();
+                args.putBoolean("mTwoPane", mTwoPane);
+                stepsFragment.setArguments(args);
+
                 // Set the data
                 stepsFragment.setRecipe(mRecipe);
 
                 // Add the fragment to its container using a transaction
                 fragmentManager.beginTransaction().add(R.id.overview_steps_container, stepsFragment).commit();
-
-                // Add the Detail Fragment to the screen
-                DetailFragment detailFragment = new DetailFragment();
-
-                // Add the the fragment
-                fragmentManager.beginTransaction().add(R.id.overview_detail_container, detailFragment).commit();
-
 
             }
 
