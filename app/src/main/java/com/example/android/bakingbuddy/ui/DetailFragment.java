@@ -256,7 +256,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         // Set the title bar
-        ((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        //((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
 
         // Initialize the player
         if(!mVideoUrl.isEmpty()){

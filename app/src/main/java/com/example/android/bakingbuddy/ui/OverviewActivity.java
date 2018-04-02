@@ -1,12 +1,16 @@
 package com.example.android.bakingbuddy.ui;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.OverviewFragmentPagerAdapter;
+import com.example.android.bakingbuddy.model.Recipe;
 
 public class OverviewActivity extends AppCompatActivity {
 
@@ -15,6 +19,8 @@ public class OverviewActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+
+    private Recipe mRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,18 +36,27 @@ public class OverviewActivity extends AppCompatActivity {
 
             if(savedInstanceState == null) {
 
+                // Get the recipe from the intent that started the activity
+                Intent intent = getIntent();
+                mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+
                 // Add the Steps Fragment to the screen
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 StepsFragment stepsFragment = new StepsFragment();
 
+                // Set the data
+                stepsFragment.setRecipe(mRecipe);
+
                 // Add the fragment to its container using a transaction
-                fragmentManager.beginTransaction().add(R.id.overview_steps_container, stepsFragment);
+                fragmentManager.beginTransaction().add(R.id.overview_steps_container, stepsFragment).commit();
 
                 // Add the Detail Fragment to the screen
                 DetailFragment detailFragment = new DetailFragment();
 
                 // Add the the fragment
-                fragmentManager.beginTransaction().add(R.id.overview_detail_container, detailFragment);
+                fragmentManager.beginTransaction().add(R.id.overview_detail_container, detailFragment).commit();
+
+
             }
 
         } else{

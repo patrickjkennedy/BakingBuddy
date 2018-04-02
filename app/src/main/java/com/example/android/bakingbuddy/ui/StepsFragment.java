@@ -119,6 +119,8 @@ public class StepsFragment extends Fragment {
         // Initialize the player
         initializePlayer(mVideoUrl);
 
+        Log.d("OverviewActivity", "Steps: " + mRecipe.getSteps());
+
         return rootView;
     }
 
@@ -194,6 +196,11 @@ public class StepsFragment extends Fragment {
         if(mExoPlayer != null){
             mCurrentPosition = mExoPlayer.getCurrentPosition();
         }
+    }
+
+    // Setter method for the recipe
+    public void setRecipe(Recipe recipe){
+        mRecipe = recipe;
     }
 
 }
