@@ -12,8 +12,9 @@
         android:text="Ingredients"
         android:padding="16dp"
         android:textSize="18sp"
-        android:layout_gravity="center"/>
-
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:textColor="#FFFFFF"/>
     <View
         android:background="@color/colorPrimaryDark"
         android:layout_width = "match_parent"
