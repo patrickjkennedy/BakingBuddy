@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.StepsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
@@ -54,6 +56,9 @@ public class StepsFragment extends Fragment {
     // SimpleExoPlayerView
     @BindView(R.id.player_view_steps) SimpleExoPlayerView mPlayerView;
 
+    // Ingredients TextView for Two Pane mode
+    @BindView(R.id.tv_steps_ingredients) TextView mIngredientsTextView;
+
     // SimpleExoPlayer
     private SimpleExoPlayer mExoPlayer;
 
@@ -84,10 +89,10 @@ public class StepsFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         mRecipe = (Recipe) intent.getSerializableExtra("recipe");
 
-        // Extract overview mVideoUrl
+        // Extract steps mVideoUrl
         mVideoUrl = mRecipe.getSteps().get(0).getVideoURL();
 
-        // Inflate the Overview fragment layout
+        // Inflate the Steps fragment layout
         View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
 
         // Bind data
@@ -131,7 +136,7 @@ public class StepsFragment extends Fragment {
         };
 
         // Initialize the Recyclerview adapter, StepsAdapter
-        mAdapter = new StepsAdapter(listener, mContext);
+        mAdapter = new StepsAdapter(listener, mContext, mTwoPane);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
@@ -139,8 +144,14 @@ public class StepsFragment extends Fragment {
         // Pass in the recipe to extract the steps
         mAdapter.setSteps(mRecipe);
 
-        // Initialize the player
-        initializePlayer(mVideoUrl);
+        if(mTwoPane){
+            //TODO: hide the player and set the instructions textview/button visible
+            mPlayerView.setVisibility(View.INVISIBLE);
+            mIngredientsTextView.setVisibility(View.VISIBLE);
+        } else{
+            // Initialize the player
+            initializePlayer(mVideoUrl);
+        }
 
         return rootView;
     }
