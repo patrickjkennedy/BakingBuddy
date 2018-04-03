@@ -14,7 +14,9 @@
         android:textSize="18sp"
         android:layout_gravity="center"
         android:background="@color/colorPrimary"
-        android:textColor="#FFFFFF"/>
+        android:textColor="#FFFFFF"
+        android:textAllCaps="true"
+        android:textStyle="bold"/>
     <View
         android:background="@color/colorPrimaryDark"
         android:layout_width = "match_parent"

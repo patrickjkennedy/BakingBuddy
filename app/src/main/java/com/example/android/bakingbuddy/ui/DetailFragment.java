@@ -104,10 +104,15 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Check to see if the fragment was started in Two Pane Mode
-        mTwoPane = getArguments().getBoolean("mTwoPane");
+        if(getArguments()!=null){
+            mTwoPane = getArguments().getBoolean("mTwoPane");
+        }
 
         // Inflate the fragment_detail layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        // Bind the data
+        ButterKnife.bind(this, rootView);
 
         // Adding this allows the Fragment to call onOptionsItemSelected correctly
         setHasOptionsMenu(true);
@@ -148,9 +153,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
         // Get the video url from the step
         mVideoUrl = mStep.getVideoURL();
-
-        // Bind the data
-        ButterKnife.bind(this, rootView);
 
         // If videoUrl is not empty, initialize the player and display
         if(!mVideoUrl.isEmpty()){
