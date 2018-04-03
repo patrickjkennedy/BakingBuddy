@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,12 +55,14 @@ public class StepsFragment extends Fragment {
     private Recipe mRecipe;
 
     // SimpleExoPlayerView
+    @Nullable
     @BindView(R.id.player_view_steps) SimpleExoPlayerView mPlayerView;
 
     // Ingredients TextView for Two Pane mode
     @BindView(R.id.tv_steps_ingredients) TextView mIngredientsTextView;
 
     // SimpleExoPlayer
+    @Nullable
     private SimpleExoPlayer mExoPlayer;
 
     // Video URL
@@ -92,8 +95,19 @@ public class StepsFragment extends Fragment {
         // Extract steps mVideoUrl
         mVideoUrl = mRecipe.getSteps().get(0).getVideoURL();
 
-        // Inflate the Steps fragment layout
-        View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
+        // Declare rootView
+        View rootView;
+
+        if(mTwoPane){
+            // Inflate the Steps fragment tablet layout
+            rootView = inflater.inflate(R.layout.fragment_steps_tablet, container, false);
+        } else {
+            // Inflate the Steps fragment layout
+            rootView = inflater.inflate(R.layout.fragment_steps, container, false);
+
+            // Initialize the player
+            initializePlayer(mVideoUrl);
+        }
 
         // Bind data
         ButterKnife.bind(this, rootView);
@@ -144,15 +158,6 @@ public class StepsFragment extends Fragment {
         // Pass in the recipe to extract the steps
         mAdapter.setSteps(mRecipe);
 
-        if(mTwoPane){
-            //TODO: hide the player and set the instructions textview/button visible
-            mPlayerView.setVisibility(View.INVISIBLE);
-            mIngredientsTextView.setVisibility(View.VISIBLE);
-        } else{
-            // Initialize the player
-            initializePlayer(mVideoUrl);
-        }
-
         return rootView;
     }
 
@@ -162,14 +167,18 @@ public class StepsFragment extends Fragment {
         // Set the title bar
         ((OverviewActivity) getActivity()).setActionBarTitle(mRecipe.getName());
 
-        // Initialize the player
-        if(!mVideoUrl.isEmpty()){
-            initializePlayer(mVideoUrl);
-            mPlayerView.setVisibility(View.VISIBLE);
-        }
+        if(mTwoPane){
+            // do nothing
+        } else {
+            // Initialize the player
+            if(!mVideoUrl.isEmpty()){
+                initializePlayer(mVideoUrl);
+                mPlayerView.setVisibility(View.VISIBLE);
+            }
 
-        if(mCurrentPosition != 0){
-            mExoPlayer.seekTo(mCurrentPosition);
+            if(mCurrentPosition != 0){
+                mExoPlayer.seekTo(mCurrentPosition);
+            }
         }
     }
 
