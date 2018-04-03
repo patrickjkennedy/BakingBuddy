@@ -10,11 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.StepsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
@@ -59,6 +59,7 @@ public class StepsFragment extends Fragment {
     @BindView(R.id.player_view_steps) SimpleExoPlayerView mPlayerView;
 
     // Ingredients TextView for Two Pane mode
+    @Nullable
     @BindView(R.id.tv_steps_ingredients) TextView mIngredientsTextView;
 
     // SimpleExoPlayer
@@ -83,7 +84,9 @@ public class StepsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Check to see if the fragment was started in Two Pane Mode
-        mTwoPane = getArguments().getBoolean("mTwoPane");
+        if(getArguments()!=null){
+            mTwoPane = getArguments().getBoolean("mTwoPane");
+        }
 
         // Context
         mContext = getContext();
@@ -101,16 +104,22 @@ public class StepsFragment extends Fragment {
         if(mTwoPane){
             // Inflate the Steps fragment tablet layout
             rootView = inflater.inflate(R.layout.fragment_steps_tablet, container, false);
+
+            // Bind data
+            ButterKnife.bind(this, rootView);
+
         } else {
             // Inflate the Steps fragment layout
             rootView = inflater.inflate(R.layout.fragment_steps, container, false);
+            Log.d("OverviewActivity", "Using fragment_steps");
+
+            // Bind data
+            ButterKnife.bind(this, rootView);
 
             // Initialize the player
             initializePlayer(mVideoUrl);
         }
 
-        // Bind data
-        ButterKnife.bind(this, rootView);
 
         // Create a linear layout manager and set it
         mLayoutManager = new LinearLayoutManager(mContext);
@@ -173,7 +182,6 @@ public class StepsFragment extends Fragment {
             // Initialize the player
             if(!mVideoUrl.isEmpty()){
                 initializePlayer(mVideoUrl);
-                mPlayerView.setVisibility(View.VISIBLE);
             }
 
             if(mCurrentPosition != 0){
