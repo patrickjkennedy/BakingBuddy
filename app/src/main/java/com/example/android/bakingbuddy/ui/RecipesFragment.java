@@ -69,6 +69,10 @@ public class RecipesFragment extends Fragment{
         // Display the loading icon
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
+        //TODO: If orientation is landscape, use a grid layout manager
+
+
+
         // Create a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);

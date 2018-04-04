@@ -108,10 +108,27 @@ public class StepsFragment extends Fragment {
             // Bind data
             ButterKnife.bind(this, rootView);
 
+            // Set an onclick listener on the Ingredients Textview
+            mIngredientsTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Create an Ingredients Fragment and add it to the screen
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    IngredientsFragment ingredientsFragment = new IngredientsFragment();
+
+                    // Pass the required data to the IngredientsFragment in an arguments bundle
+                    Bundle args = new Bundle();
+                    args.putSerializable("mRecipe", mRecipe);
+                    ingredientsFragment.setArguments(args);
+
+                    // Add the fragment to its container using a transaction
+                    fragmentManager.beginTransaction().replace(R.id.overview_detail_container, ingredientsFragment).commit();
+                }
+            });
+
         } else {
             // Inflate the Steps fragment layout
             rootView = inflater.inflate(R.layout.fragment_steps, container, false);
-            Log.d("OverviewActivity", "Using fragment_steps");
 
             // Bind data
             ButterKnife.bind(this, rootView);
@@ -125,7 +142,7 @@ public class StepsFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // Setup click listener
+        // Setup click listener for steps
         StepsAdapter.StepsAdapterClickListener listener = new StepsAdapter.StepsAdapterClickListener(){
             @Override
             public void onClick(View view, int position) {

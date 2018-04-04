@@ -42,9 +42,13 @@ public class IngredientsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // Get the recipe from the intent that started the activity
-        Intent intent = getActivity().getIntent();
-        mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+        // Get the recipe from the intent that started the activity, or from the arguments bundle if not null
+        if(getArguments()!=null){
+            mRecipe = (Recipe) getArguments().getSerializable("mRecipe");
+        } else {
+            Intent intent = getActivity().getIntent();
+            mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+        }
 
         // Context
         mContext = getActivity();
