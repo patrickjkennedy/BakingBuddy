@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,13 +71,18 @@ public class RecipesFragment extends Fragment{
         // Display the loading icon
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
-        //TODO: If orientation is landscape, use a grid layout manager
-
-
-
-        // Create a linear layout manager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        // Setup Layout Manager based on size and orientation
+        if (rootView.findViewById(R.id.tablet_landscape) != null){
+            GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 4);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+        } else if (rootView.findViewById(R.id.tablet) != null){
+            GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 2);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+        } else {
+            // Create a linear layout manager
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+        }
 
         // Setup click listener
         RecipesAdapter.MasterListAdapterClickListener listener = new RecipesAdapter.MasterListAdapterClickListener() {
