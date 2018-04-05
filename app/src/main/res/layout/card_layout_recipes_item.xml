@@ -41,12 +41,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_master_list_item_recipe_serves"
-            android:textSize="30sp"
+            android:textSize="24sp"
             tools:text="Serves 8"
             android:textStyle="italic"
-            android:layout_below="@+id/iv_master_list_item"
-            android:layout_alignEnd="@id/iv_master_list_item"
-            android:layout_alignRight="@id/iv_master_list_item"/>
+            android:layout_below="@+id/tv_master_list_item_recipe_name" />
 
     </RelativeLayout>
 

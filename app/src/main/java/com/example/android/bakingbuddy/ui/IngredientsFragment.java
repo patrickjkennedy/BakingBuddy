@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.IngredientsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
