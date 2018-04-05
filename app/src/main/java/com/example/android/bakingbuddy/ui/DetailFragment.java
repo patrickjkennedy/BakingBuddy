@@ -1,6 +1,7 @@
 package com.example.android.bakingbuddy.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.model.Recipe;
@@ -90,6 +92,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
     // Two Pane Mode Boolean
     private boolean mTwoPane = false;
+
+    // Dialog variable for fullscreen mode
+    private Dialog mFullScreenDialog;
+
+    // Boolean variable for fullscreen mode
+    private Boolean mPlayerViewFullscreen = false;
 
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
@@ -308,5 +316,31 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             long position = mExoPlayer.getCurrentPosition();
             outState.putLong(POS_KEY, position);
         }
+    }
+
+    private void initFullscreenDialog(){
+        mFullScreenDialog = new Dialog(mContext, android.R.style.Theme_NoTitleBar_Fullscreen) {
+            public void onBackPressed() {
+                if (mPlayerViewFullscreen){
+                    closeFullscreenDialog();
+                }
+                super.onBackPressed();
+            }
+        };
+    }
+
+    private void openFullscreenDialog(){
+        ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+        mFullScreenDialog.addContentView(mPlayerView,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mPlayerViewFullscreen = true;
+        mFullScreenDialog.show();
+    }
+
+    private void closeFullscreenDialog(){
+        ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+        ((FrameLayout) getActivity().findViewById(R.id.fl_player_view)).addView(mPlayerView);
+        mPlayerViewFullscreen = false;
+        mFullScreenDialog.dismiss();
     }
 }
