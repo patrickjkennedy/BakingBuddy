@@ -203,19 +203,17 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             releasePlayer();
         }
 
-        // Create new fragment
-        DetailFragment detailFragment = new DetailFragment();
+        // Create new intent
+        Class destinationClass = DetailActivity.class;
+        Intent intent = new Intent(mContext, destinationClass);
 
-        Bundle args = new Bundle();
-        args.putInt("position", mPosition);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("recipe", mRecipe);
+        bundle.putInt("position", mPosition);
 
-        detailFragment.setArguments(args);
-
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.detail_fragment, detailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        intent.putExtras(bundle);
+        intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivityForResult(intent, 1);
     }
 
     private void initializePlayer(String mediaUrl) {
