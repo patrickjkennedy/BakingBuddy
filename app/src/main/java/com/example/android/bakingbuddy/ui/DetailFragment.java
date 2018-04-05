@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -84,9 +85,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     // Position Key
     private String POS_KEY;
 
-    // Orientation
-    private int ORIENTATION;
-
     // Current position (for OnResume)
     private long mCurrentPosition;
 
@@ -105,6 +103,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (mFullScreenDialog !=null){
+            mFullScreenDialog.dismiss();
+        }
 
         // Check to see if the fragment was started in Two Pane Mode
         if(getArguments()!=null){
@@ -172,6 +174,14 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         // Bind the description data to the respective textviews
         description.setText(mStep.getDescription());
         shortDescription.setText(mStep.getShortDescription());
+
+        // Get orientation
+        int ORIENTATION = getActivity().getResources().getConfiguration().orientation;
+
+        if(!mTwoPane && Configuration.ORIENTATION_LANDSCAPE == ORIENTATION){
+            initFullscreenDialog();
+            openFullscreenDialog();
+        }
 
 
         return rootView;
@@ -269,8 +279,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        // Set the title bar
-        //((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        // Set the title bar in DetailActivity for phone mode
+        if(!mTwoPane){
+            ((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        }
 
         // Initialize the player
         if(!mVideoUrl.isEmpty()){
@@ -286,7 +298,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onPause() {
         super.onPause();
-        if(mExoPlayer != null){
+        if(mExoPlayer != null) {
             mCurrentPosition = mExoPlayer.getCurrentPosition();
         }
     }
