@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.StepsAdapter;
 import com.example.android.bakingbuddy.model.Recipe;
@@ -51,9 +54,15 @@ public class StepsFragment extends Fragment {
     private Recipe mRecipe;
 
     // SimpleExoPlayerView
+    @Nullable
     @BindView(R.id.player_view_steps) SimpleExoPlayerView mPlayerView;
 
+    // Ingredients TextView for Two Pane mode
+    @Nullable
+    @BindView(R.id.tv_steps_ingredients) TextView mIngredientsTextView;
+
     // SimpleExoPlayer
+    @Nullable
     private SimpleExoPlayer mExoPlayer;
 
     // Video URL
@@ -61,6 +70,9 @@ public class StepsFragment extends Fragment {
 
     // Current position (for OnResume)
     private long mCurrentPosition;
+
+    // Two Pane Mode Boolean
+    private boolean mTwoPane = false;
 
     // Mandatory empty constructor
     public StepsFragment(){
@@ -70,6 +82,11 @@ public class StepsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // Check to see if the fragment was started in Two Pane Mode
+        if(getArguments()!=null){
+            mTwoPane = getArguments().getBoolean("mTwoPane");
+        }
+
         // Context
         mContext = getContext();
 
@@ -77,46 +94,94 @@ public class StepsFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         mRecipe = (Recipe) intent.getSerializableExtra("recipe");
 
-        // Extract overview mVideoUrl
+        // Extract steps mVideoUrl
         mVideoUrl = mRecipe.getSteps().get(0).getVideoURL();
 
-        // Inflate the Overview fragment layout
-        View rootView = inflater.inflate(R.layout.fragment_steps, container, false);
+        // Declare rootView
+        View rootView;
 
-        // Bind data
-        ButterKnife.bind(this, rootView);
+        if(mTwoPane){
+            // Inflate the Steps fragment tablet layout
+            rootView = inflater.inflate(R.layout.fragment_steps_tablet, container, false);
+
+            // Bind data
+            ButterKnife.bind(this, rootView);
+
+            // Set an onclick listener on the Ingredients Textview
+            mIngredientsTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Create an Ingredients Fragment and add it to the screen
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    IngredientsFragment ingredientsFragment = new IngredientsFragment();
+
+                    // Pass the required data to the IngredientsFragment in an arguments bundle
+                    Bundle args = new Bundle();
+                    args.putSerializable("mRecipe", mRecipe);
+                    ingredientsFragment.setArguments(args);
+
+                    // Add the fragment to its container using a transaction
+                    fragmentManager.beginTransaction().replace(R.id.overview_detail_container, ingredientsFragment).commit();
+                }
+            });
+
+        } else {
+            // Inflate the Steps fragment layout
+            rootView = inflater.inflate(R.layout.fragment_steps, container, false);
+
+            // Bind data
+            ButterKnife.bind(this, rootView);
+
+            // Initialize the player
+            initializePlayer(mVideoUrl);
+        }
+
 
         // Create a linear layout manager and set it
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // Setup click listener
+        // Setup click listener for steps
         StepsAdapter.StepsAdapterClickListener listener = new StepsAdapter.StepsAdapterClickListener(){
             @Override
             public void onClick(View view, int position) {
-                Class destinationClass = DetailActivity.class;
-                Intent intent = new Intent(mContext, destinationClass);
+                if (mTwoPane){
+                    // Create the correct detail fragment and add it to the screen
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    DetailFragment detailFragment = new DetailFragment();
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("recipe", mRecipe);
-                bundle.putInt("position", position);
+                    // Pass required data to the DetailFragment in an arguments bundle
+                    Bundle args = new Bundle();
+                    args.putBoolean("mTwoPane", mTwoPane);
+                    args.putInt("mPosition", position);
+                    args.putSerializable("mRecipe", mRecipe);
+                    detailFragment.setArguments(args);
 
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);
+                    // Add the fragment to its container using a transaction
+                    fragmentManager.beginTransaction().replace(R.id.overview_detail_container, detailFragment).commit();
+
+                } else {
+                    Class destinationClass = DetailActivity.class;
+                    Intent intent = new Intent(mContext, destinationClass);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("recipe", mRecipe);
+                    bundle.putInt("position", position);
+
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, 1);
+                }
             }
         };
 
         // Initialize the Recyclerview adapter, StepsAdapter
-        mAdapter = new StepsAdapter(listener, mContext);
+        mAdapter = new StepsAdapter(listener, mContext, mTwoPane);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
 
         // Pass in the recipe to extract the steps
         mAdapter.setSteps(mRecipe);
-
-        // Initialize the player
-        initializePlayer(mVideoUrl);
 
         return rootView;
     }
@@ -127,14 +192,17 @@ public class StepsFragment extends Fragment {
         // Set the title bar
         ((OverviewActivity) getActivity()).setActionBarTitle(mRecipe.getName());
 
-        // Initialize the player
-        if(!mVideoUrl.isEmpty()){
-            initializePlayer(mVideoUrl);
-            mPlayerView.setVisibility(View.VISIBLE);
-        }
+        if(mTwoPane){
+            // do nothing
+        } else {
+            // Initialize the player
+            if(!mVideoUrl.isEmpty()){
+                initializePlayer(mVideoUrl);
+            }
 
-        if(mCurrentPosition != 0){
-            mExoPlayer.seekTo(mCurrentPosition);
+            if(mCurrentPosition != 0){
+                mExoPlayer.seekTo(mCurrentPosition);
+            }
         }
     }
 
@@ -193,6 +261,11 @@ public class StepsFragment extends Fragment {
         if(mExoPlayer != null){
             mCurrentPosition = mExoPlayer.getCurrentPosition();
         }
+    }
+
+    // Setter method for the recipe
+    public void setRecipe(Recipe recipe){
+        mRecipe = recipe;
     }
 
 }

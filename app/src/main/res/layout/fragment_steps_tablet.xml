@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_steps"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_steps_ingredients"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingredients"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="true"
+        android:textStyle="bold"/>
+    <View
+        android:background="@color/colorPrimaryDark"
+        android:layout_width = "match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tv_steps_ingredients"
+        android:id="@+id/h_divider"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_steps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/h_divider"/>
+
+</RelativeLayout>

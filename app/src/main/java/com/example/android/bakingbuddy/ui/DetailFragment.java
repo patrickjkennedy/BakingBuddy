@@ -3,19 +3,15 @@ package com.example.android.bakingbuddy.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
@@ -36,7 +32,6 @@ import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Optional;
 
 /**
  * Created by pkennedy on 3/24/18.
@@ -93,6 +88,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     // Current position (for OnResume)
     private long mCurrentPosition;
 
+    // Two Pane Mode Boolean
+    private boolean mTwoPane = false;
+
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
     }
@@ -100,41 +98,56 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // Check to see if the fragment was started in Two Pane Mode
+        if(getArguments()!=null){
+            mTwoPane = getArguments().getBoolean("mTwoPane");
+        }
+
         // Inflate the fragment_detail layout
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        // Determine orientation of device
-        ORIENTATION = getResources().getConfiguration().orientation;
+        // Bind the data
+        ButterKnife.bind(this, rootView);
 
         // Adding this allows the Fragment to call onOptionsItemSelected correctly
         setHasOptionsMenu(true);
 
+        // Context
         mContext = getContext();
 
-        // Get the data from the intent that started this fragment
-        Intent intent = getActivity().getIntent();
-        mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+        if(mTwoPane){
 
-        if(getArguments() == null){
-            mPosition = (Integer) intent.getIntExtra("position",0);
+            // Get recipe and position from arguments bundle
+            mRecipe = (Recipe) getArguments().getSerializable("mRecipe");
+            mPosition = getArguments().getInt("mPosition");
+
+        } else {
+            // Get the data from the intent that started this fragment
+            Intent intent = getActivity().getIntent();
+            mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+
+            if(getArguments() == null){
+                mPosition = (Integer) intent.getIntExtra("position",0);
+            } else {
+                mPosition = getArguments().getInt("position");
+            }
+
+            // Set on click listener on buttons
+            mPreviousButton.setOnClickListener(this);
+            mNextButton.setOnClickListener(this);
+
+            // Display buttons
+            displayButtons(mPosition);
         }
 
         // Get the steps from the recipe
         mSteps = mRecipe.getSteps();
-
-        // Check to see if the fragment was started by a previous fragment
-        if(getArguments()!=null){
-            mPosition = getArguments().getInt("position");
-        }
 
         // Get the step from position in the array
         mStep = mSteps.get(mPosition);
 
         // Get the video url from the step
         mVideoUrl = mStep.getVideoURL();
-
-        // Bind the data
-        ButterKnife.bind(this, rootView);
 
         // If videoUrl is not empty, initialize the player and display
         if(!mVideoUrl.isEmpty()){
@@ -147,18 +160,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             mExoPlayer.seekTo(savedInstanceState.getLong(POS_KEY));
         }
 
-        if(ORIENTATION == 1) {
-            // Set on click listener on buttons
-            mPreviousButton.setOnClickListener(this);
-            mNextButton.setOnClickListener(this);
 
-            // Display buttons
-            displayButtons(mPosition);
+        // Bind the description data to the respective textviews
+        description.setText(mStep.getDescription());
+        shortDescription.setText(mStep.getShortDescription());
 
-            // Bind the description data to the respective textviews
-            description.setText(mStep.getDescription());
-            shortDescription.setText(mStep.getShortDescription());
-        }
+
         return rootView;
     }
 
@@ -175,7 +182,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
         // If ExoPlayer is initialized, release
         if(mExoPlayer != null){
-           releasePlayer();
+            releasePlayer();
         }
 
         // Create new fragment
@@ -191,7 +198,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         transaction.replace(R.id.detail_fragment, detailFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-        Log.d("DetailActivity", "mExoPlayer: " + mExoPlayer);
     }
 
     private void initializePlayer(String mediaUrl) {
@@ -256,7 +262,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         // Set the title bar
-        ((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        //((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
 
         // Initialize the player
         if(!mVideoUrl.isEmpty()){
@@ -278,6 +284,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     }
 
     private void displayButtons(int position){
+
+        // Make buttons visible
+        mPreviousButton.setVisibility(View.VISIBLE);
+        mNextButton.setVisibility(View.VISIBLE);
+
         if(position == 0){
             mPreviousButton.setVisibility(View.INVISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
