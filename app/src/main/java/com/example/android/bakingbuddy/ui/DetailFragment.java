@@ -1,8 +1,10 @@
 package com.example.android.bakingbuddy.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.model.Recipe;
@@ -82,14 +85,17 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     // Position Key
     private String POS_KEY;
 
-    // Orientation
-    private int ORIENTATION;
-
     // Current position (for OnResume)
     private long mCurrentPosition;
 
     // Two Pane Mode Boolean
     private boolean mTwoPane = false;
+
+    // Dialog variable for fullscreen mode
+    private Dialog mFullScreenDialog;
+
+    // Boolean variable for fullscreen mode
+    private Boolean mPlayerViewFullscreen = false;
 
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
@@ -97,6 +103,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (mFullScreenDialog !=null){
+            mFullScreenDialog.dismiss();
+        }
 
         // Check to see if the fragment was started in Two Pane Mode
         if(getArguments()!=null){
@@ -164,6 +174,14 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         // Bind the description data to the respective textviews
         description.setText(mStep.getDescription());
         shortDescription.setText(mStep.getShortDescription());
+
+        // Get orientation
+        int ORIENTATION = getActivity().getResources().getConfiguration().orientation;
+
+        if(!mTwoPane && Configuration.ORIENTATION_LANDSCAPE == ORIENTATION){
+            initFullscreenDialog();
+            openFullscreenDialog();
+        }
 
 
         return rootView;
@@ -261,8 +279,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        // Set the title bar
-        //((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        // Set the title bar in DetailActivity for phone mode
+        if(!mTwoPane){
+            ((DetailActivity) getActivity()).setActionBarTitle(mRecipe.getName());
+        }
 
         // Initialize the player
         if(!mVideoUrl.isEmpty()){
@@ -278,7 +298,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onPause() {
         super.onPause();
-        if(mExoPlayer != null){
+        if(mExoPlayer != null) {
             mCurrentPosition = mExoPlayer.getCurrentPosition();
         }
     }
@@ -308,5 +328,31 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             long position = mExoPlayer.getCurrentPosition();
             outState.putLong(POS_KEY, position);
         }
+    }
+
+    private void initFullscreenDialog(){
+        mFullScreenDialog = new Dialog(mContext, android.R.style.Theme_NoTitleBar_Fullscreen) {
+            public void onBackPressed() {
+                if (mPlayerViewFullscreen){
+                    closeFullscreenDialog();
+                }
+                super.onBackPressed();
+            }
+        };
+    }
+
+    private void openFullscreenDialog(){
+        ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+        mFullScreenDialog.addContentView(mPlayerView,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mPlayerViewFullscreen = true;
+        mFullScreenDialog.show();
+    }
+
+    private void closeFullscreenDialog(){
+        ((ViewGroup) mPlayerView.getParent()).removeView(mPlayerView);
+        ((FrameLayout) getActivity().findViewById(R.id.fl_player_view)).addView(mPlayerView);
+        mPlayerViewFullscreen = false;
+        mFullScreenDialog.dismiss();
     }
 }
