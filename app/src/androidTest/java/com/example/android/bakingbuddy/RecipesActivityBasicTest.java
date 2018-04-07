@@ -17,11 +17,27 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 @RunWith(AndroidJUnit4.class)
 public class RecipesActivityBasicTest {
 
+    private static final String RECIPE_NAME_0 = "Nutella Pie";
+    private static final String RECIPE_NAME_1 = "Brownies";
     private static final String RECIPE_STEP = "Prep the cookie crust.";
 
     @Rule
     public ActivityTestRule<RecipesActivity> mActivityTestRule =
             new ActivityTestRule<>(RecipesActivity.class);
+
+    /**
+     * Check the Recyclerview contains the correct recipes
+     */
+    @Test
+    public void checkRecipeName(){
+        // Check item at position 0 has "Nutella Pie"
+        onView(RecyclerViewMatcher.withRecyclerView(R.id.rv_master_list).atPosition(0))
+                .check(matches(hasDescendant(withText(RECIPE_NAME_0))));
+
+        // Check item at position 1 has "Brownies"
+        onView(RecyclerViewMatcher.withRecyclerView(R.id.rv_master_list).atPosition(1))
+                .check(matches(hasDescendant(withText(RECIPE_NAME_1))));
+    }
 
 
     /**
