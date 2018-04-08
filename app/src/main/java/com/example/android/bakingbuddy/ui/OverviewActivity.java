@@ -6,9 +6,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.OverviewFragmentPagerAdapter;
+import com.example.android.bakingbuddy.model.Ingredient;
 import com.example.android.bakingbuddy.model.Recipe;
+import com.example.android.bakingbuddy.widget.UpdateBakingService;
+
+import java.util.ArrayList;
 
 public class OverviewActivity extends AppCompatActivity {
 
@@ -20,10 +26,16 @@ public class OverviewActivity extends AppCompatActivity {
 
     private Recipe mRecipe;
 
+    private ArrayList<Ingredient> mIngredients;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+
+        // Get the recipe from the intent that started the activity
+        Intent intent = getIntent();
+        mRecipe = (Recipe) intent.getSerializableExtra("recipe");
 
         if(findViewById(R.id.overview_detail_container) != null) {
             // The detail container view will be present only in the
@@ -33,10 +45,6 @@ public class OverviewActivity extends AppCompatActivity {
             mTwoPane = true;
 
             if(savedInstanceState == null) {
-
-                // Get the recipe from the intent that started the activity
-                Intent intent = getIntent();
-                mRecipe = (Recipe) intent.getSerializableExtra("recipe");
 
                 // Add the Steps Fragment to the screen
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -70,8 +78,9 @@ public class OverviewActivity extends AppCompatActivity {
             // Give the TabLayout the ViewPager
             TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
             tabLayout.setupWithViewPager(viewPager);
-
         }
+
+       UpdateBakingService.startBakingService(this, mRecipe);
 
     }
 
