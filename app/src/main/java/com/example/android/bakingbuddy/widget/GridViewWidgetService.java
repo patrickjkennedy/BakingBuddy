@@ -2,6 +2,7 @@ package com.example.android.bakingbuddy.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.example.android.bakingbuddy.R;
@@ -52,7 +53,7 @@ public class GridViewWidgetService extends RemoteViewsService{
 
             RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_grid_view_item);
 
-            views.setTextViewText(R.layout.widget_grid_view_item, remoteViewIngredients.get(i).toString());
+            views.setTextViewText(R.id.widget_grid_view_item, remoteViewIngredients.get(i).toString());
 
             Intent fillInIntent = new Intent();
             views.setOnClickFillInIntent(R.id.widget_grid_view_item, fillInIntent);
