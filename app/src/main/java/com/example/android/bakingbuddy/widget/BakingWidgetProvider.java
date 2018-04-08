@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.model.Ingredient;
@@ -28,7 +27,7 @@ public class BakingWidgetProvider extends AppWidgetProvider {
                                 int appWidgetId) {
 
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_list_view);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_grid_view);
 
         //call activity when widget is clicked, but resume activity from stack so you do not pass intent.extras afresh
         Intent appIntent = new Intent(context, OverviewActivity.class);
@@ -36,11 +35,11 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         appIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.lv_widget, appPendingIntent);
+        views.setPendingIntentTemplate(R.id.widget_grid_view, appPendingIntent);
 
         // Set the GridWidgetService intent to act as the adapter for the GridView
-        Intent intent = new Intent(context, ListViewWidgetService.class);
-        views.setRemoteAdapter(R.id.lv_widget, intent);
+        Intent intent = new Intent(context, GridViewWidgetService.class);
+        views.setRemoteAdapter(R.id.widget_grid_view, intent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -72,7 +71,7 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         if (action.equals("android.appwidget.action.APPWIDGET_UPDATE2")) {
             Recipe recipe = (Recipe) intent.getExtras().getSerializable(FROM_ACTIVITY_RECIPE);
             ingredientsList = recipe.getIngredients();
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.lv_widget);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_grid_view);
             //Now update all widgets
             BakingWidgetProvider.updateBakingWidgets(context, appWidgetManager, appWidgetIds);
             super.onReceive(context, intent);
