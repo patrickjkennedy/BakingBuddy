@@ -2,10 +2,10 @@
 
 This application demonstrates several advanced Android programming concepts, such as fragments, tablet layouts, and automated UI tests.
 
-It makes use of several popular Android libraries - Retrokit 2 for HTTP requests, Butterknife for data binding, and Espresso for writing
-automated UI tests.
+It makes use of several popular Android libraries - [Retrofit for HTTP requests](https://square.github.io/retrofit/), [Butterknife for view binding](https://jakewharton.github.io/butterknife/),
+and Espresso for writing automated UI tests.
 
-Users can watch videos to help step them through their selected recipe as well as use a widget to display its ingredients on their device's
+Users can watch videos to help guide them through their selected recipes as well as use a widget to display its ingredients on their device's
 homescreen. There are alternate layouts for landscape and tablet modes.
 
 <img src="https://user-images.githubusercontent.com/8617261/38471608-55e53b1c-3b6b-11e8-9765-344664b8373b.png" alt="Recipes"/>
@@ -16,3 +16,5 @@ homescreen. There are alternate layouts for landscape and tablet modes.
 ## License
 
 The contents of this repository are covered under the [MIT License.](LICENSE)
+
+[Credit to Danny Roa for his RecyclerViewMatcher.](https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java)
