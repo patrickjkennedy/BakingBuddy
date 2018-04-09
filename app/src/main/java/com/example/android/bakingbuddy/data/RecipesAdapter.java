@@ -27,7 +27,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     private MasterListAdapterClickListener mListener;
 
     // I'll put some placeholder data here to use for testing
-    //TODO: Replace these with resources from api
     private int[] images = { R.drawable.nutella_pie, R.drawable.brownies, R.drawable.yellow_cake, R.drawable.cheesecake };
 
     // ArrayList of Recipes
