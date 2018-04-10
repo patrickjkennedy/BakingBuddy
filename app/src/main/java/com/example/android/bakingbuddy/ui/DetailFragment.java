@@ -9,14 +9,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.model.Recipe;
 import com.example.android.bakingbuddy.model.Step;
@@ -33,6 +36,8 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -55,10 +60,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     private Recipe mRecipe;
 
     // Steps in the Recipe
-    private ArrayList<Step> mSteps = new ArrayList<>();
+    private ArrayList<Step> mSteps;
 
     // SimpleExoPlayerView
     @BindView(R.id.player_view) SimpleExoPlayerView mPlayerView;
+
+    // Thumbnail Imageview
+    @BindView(R.id.iv_thumbnail) ImageView mThumbnailImageView;
 
     // SimpleExoPlayer
     private SimpleExoPlayer mExoPlayer;
@@ -82,8 +90,8 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     // Video URL
     private String mVideoUrl;
 
-    // Position Key
-    private String POS_KEY;
+    // Thumbnail URL
+    private String mThumbnailUrl;
 
     // Current position (for OnResume)
     private long mCurrentPosition;
@@ -97,12 +105,18 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     // Boolean variable for fullscreen mode
     private Boolean mPlayerViewFullscreen = false;
 
+    // Hashmap for Recipe placeholders
+    HashMap<String, Integer> placeholderMap = new HashMap<>();
+
     // Mandatory constructor for inflating the fragment
     public DetailFragment(){
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        // Create a hashmap for the placeholder images based on recipe names
+        initPlaceHolderMap();
 
         if (mFullScreenDialog !=null){
             mFullScreenDialog.dismiss();
@@ -131,10 +145,16 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             mRecipe = (Recipe) getArguments().getSerializable("mRecipe");
             mPosition = getArguments().getInt("mPosition");
 
+            // Get the steps from the recipe
+            mSteps = mRecipe.getSteps();
+
         } else {
             // Get the data from the intent that started this fragment
             Intent intent = getActivity().getIntent();
             mRecipe = (Recipe) intent.getSerializableExtra("recipe");
+
+            // Get the steps from the recipe
+            mSteps = mRecipe.getSteps();
 
             if(getArguments() == null){
                 mPosition = (Integer) intent.getIntExtra("position",0);
@@ -150,24 +170,41 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
             displayButtons(mPosition);
         }
 
-        // Get the steps from the recipe
-        mSteps = mRecipe.getSteps();
-
         // Get the step from position in the array
         mStep = mSteps.get(mPosition);
 
         // Get the video url from the step
         mVideoUrl = mStep.getVideoURL();
 
-        // If videoUrl is not empty, initialize the player and display
-        if(!mVideoUrl.isEmpty()){
+        //Get the thumbnail url
+        mThumbnailUrl = mStep.getThumbnailURL();
+
+        // Show playerview and imageview as required
+        if(!mVideoUrl.isEmpty() && mThumbnailUrl.isEmpty()){
             initializePlayer(mVideoUrl);
             mPlayerView.setVisibility(View.VISIBLE);
+        } else if(!mThumbnailUrl.isEmpty() && mVideoUrl.isEmpty()){
+            initializePlayer(mThumbnailUrl);
+            mPlayerView.setVisibility(View.VISIBLE);
+        } else {
+
+            // Get the correct placeholder
+            int image = placeholderMap.get(mRecipe.getName());
+
+            // Display the recipe placeholder image
+            mThumbnailImageView.setVisibility(View.VISIBLE);
+            Glide.with(mContext).load(image).into(mThumbnailImageView);
+
         }
 
         // Check if coming from saved instance state, and track to that position
-        if(savedInstanceState != null){
-            mExoPlayer.seekTo(savedInstanceState.getLong(POS_KEY));
+        if(savedInstanceState!=null && mExoPlayer!=null){
+            long position = savedInstanceState.getLong("POS_KEY");
+            float volume = savedInstanceState.getFloat("VOLUME");
+            boolean playState = savedInstanceState.getBoolean("PLAY_STATE");
+
+            mExoPlayer.seekTo(position);
+            mExoPlayer.setPlayWhenReady(playState);
         }
 
 
@@ -178,7 +215,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         // Get orientation
         int ORIENTATION = getActivity().getResources().getConfiguration().orientation;
 
-        if(!mTwoPane && Configuration.ORIENTATION_LANDSCAPE == ORIENTATION){
+        if(!mTwoPane && Configuration.ORIENTATION_LANDSCAPE == ORIENTATION && mExoPlayer!=null){
             initFullscreenDialog();
             openFullscreenDialog();
         }
@@ -321,11 +358,20 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         if(mExoPlayer != null){
             long position = mExoPlayer.getCurrentPosition();
-            outState.putLong(POS_KEY, position);
+            outState.putLong("POS_KEY", position);
+
+            float volume = mExoPlayer.getVolume();
+            outState.putFloat("VOLUME", volume);
+
+            boolean playState = mExoPlayer.getPlayWhenReady();
+            outState.putBoolean("PLAY_STATE", playState);
+
+            super.onSaveInstanceState(outState);
+
         }
+
     }
 
     private void initFullscreenDialog(){
@@ -352,5 +398,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         ((FrameLayout) getActivity().findViewById(R.id.fl_player_view)).addView(mPlayerView);
         mPlayerViewFullscreen = false;
         mFullScreenDialog.dismiss();
+    }
+
+    private void initPlaceHolderMap(){
+        placeholderMap.put("Nutella Pie", R.drawable.nutella_pie);
+        placeholderMap.put("Brownies", R.drawable.brownies);
+        placeholderMap.put("Yellow Cake", R.drawable.yellow_cake);
+        placeholderMap.put("Cheesecake", R.drawable.cheesecake);
     }
 }
