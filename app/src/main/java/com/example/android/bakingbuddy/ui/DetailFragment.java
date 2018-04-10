@@ -93,9 +93,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     // Thumbnail URL
     private String mThumbnailUrl;
 
-    // Position Key
-    private String POS_KEY;
-
     // Current position (for OnResume)
     private long mCurrentPosition;
 
@@ -201,8 +198,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         }
 
         // Check if coming from saved instance state, and track to that position
-        if(savedInstanceState != null && mExoPlayer!=null){
-            mExoPlayer.seekTo(savedInstanceState.getLong(POS_KEY));
+        if(savedInstanceState!=null && mExoPlayer!=null){
+            long position = savedInstanceState.getLong("POS_KEY");
+            float volume = savedInstanceState.getFloat("VOLUME");
+            boolean playState = savedInstanceState.getBoolean("PLAY_STATE");
+
+            mExoPlayer.seekTo(position);
+            mExoPlayer.setPlayWhenReady(playState);
         }
 
 
@@ -356,11 +358,20 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         if(mExoPlayer != null){
             long position = mExoPlayer.getCurrentPosition();
-            outState.putLong(POS_KEY, position);
+            outState.putLong("POS_KEY", position);
+
+            float volume = mExoPlayer.getVolume();
+            outState.putFloat("VOLUME", volume);
+
+            boolean playState = mExoPlayer.getPlayWhenReady();
+            outState.putBoolean("PLAY_STATE", playState);
+
+            super.onSaveInstanceState(outState);
+
         }
+
     }
 
     private void initFullscreenDialog(){
