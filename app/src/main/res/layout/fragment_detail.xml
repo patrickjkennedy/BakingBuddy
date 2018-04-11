@@ -22,7 +22,7 @@
             android:visibility="invisible"/>
 
         <ImageView
-            android:id="@+id/iv_thumbnail"
+            android:id="@+id/iv_recipeImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible"/>
