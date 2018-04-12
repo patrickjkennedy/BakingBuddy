@@ -9,7 +9,7 @@ Users can watch videos to help guide them through their selected recipes as well
 homescreen. There are alternate layouts for landscape and tablet modes.
 
 <img src="https://user-images.githubusercontent.com/8617261/38471608-55e53b1c-3b6b-11e8-9765-344664b8373b.png" alt="Recipes"/>
-<img src="https://user-images.githubusercontent.com/8617261/38471607-55cc0476-3b6b-11e8-95c6-8765e227ab66.png" alt="Overview"/>
+<img src="https://user-images.githubusercontent.com/8617261/38699623-6f853ce8-3e90-11e8-813b-8eef775b6234.png" alt="Overview"/>
 <img src="https://user-images.githubusercontent.com/8617261/38471606-55aefe08-3b6b-11e8-962d-3fce5252a974.png" alt="Detail - Fullscreen Landscape"/>
 <img src="https://user-images.githubusercontent.com/8617261/38471605-5592ae6a-3b6b-11e8-9ea7-430c0077114b.png" alt="Overview Tablet layout"/>
 
