@@ -1,8 +1,10 @@
 package com.example.android.bakingbuddy.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.data.StepsAdapter;
@@ -53,23 +56,9 @@ public class StepsFragment extends Fragment {
     // Recipe
     private Recipe mRecipe;
 
-    // SimpleExoPlayerView
-    @Nullable
-    @BindView(R.id.player_view_steps) SimpleExoPlayerView mPlayerView;
-
     // Ingredients TextView for Two Pane mode
     @Nullable
     @BindView(R.id.tv_steps_ingredients) TextView mIngredientsTextView;
-
-    // SimpleExoPlayer
-    @Nullable
-    private SimpleExoPlayer mExoPlayer;
-
-    // Video URL
-    private String mVideoUrl;
-
-    // Current position (for OnResume)
-    private long mCurrentPosition;
 
     // Two Pane Mode Boolean
     private boolean mTwoPane = false;
@@ -93,9 +82,6 @@ public class StepsFragment extends Fragment {
         // Get the recipe from the intent that started the activity
         Intent intent = getActivity().getIntent();
         mRecipe = (Recipe) intent.getSerializableExtra("recipe");
-
-        // Extract steps mVideoUrl
-        mVideoUrl = mRecipe.getSteps().get(0).getVideoURL();
 
         // Declare rootView
         View rootView;
@@ -132,10 +118,7 @@ public class StepsFragment extends Fragment {
             // Bind data
             ButterKnife.bind(this, rootView);
 
-            // Initialize the player
-            initializePlayer(mVideoUrl);
         }
-
 
         // Create a linear layout manager and set it
         mLayoutManager = new LinearLayoutManager(mContext);
@@ -175,7 +158,7 @@ public class StepsFragment extends Fragment {
         };
 
         // Initialize the Recyclerview adapter, StepsAdapter
-        mAdapter = new StepsAdapter(listener, mContext, mTwoPane);
+        mAdapter = new StepsAdapter(listener, mContext);
 
         // Set the adapter
         mRecyclerView.setAdapter(mAdapter);
@@ -191,19 +174,6 @@ public class StepsFragment extends Fragment {
         super.onResume();
         // Set the title bar
         ((OverviewActivity) getActivity()).setActionBarTitle(mRecipe.getName());
-
-        if(mTwoPane){
-            // do nothing
-        } else {
-            // Initialize the player
-            if(!mVideoUrl.isEmpty()){
-                initializePlayer(mVideoUrl);
-            }
-
-            if(mCurrentPosition != 0){
-                mExoPlayer.seekTo(mCurrentPosition);
-            }
-        }
     }
 
     @Override
@@ -214,52 +184,6 @@ public class StepsFragment extends Fragment {
             if(resultCode == Activity.RESULT_OK){
                 mRecipe = (Recipe) data.getSerializableExtra("recipe");
             }
-        }
-    }
-
-    private void initializePlayer(String mediaUrl) {
-        if(mExoPlayer == null){
-            // Create an instance of the ExoPlayer
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector, loadControl);
-            mPlayerView.setPlayer(mExoPlayer);
-            // Prepare the media source
-            String userAgent = Util.getUserAgent(mContext, "BakingBuddy");
-            MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(mediaUrl),
-                    new DefaultDataSourceFactory(mContext, userAgent),
-                    new DefaultExtractorsFactory(),
-                    null,
-                    null);
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
-        }
-    }
-
-    private void releasePlayer(){
-        if (null != mExoPlayer) {
-            mExoPlayer.release();
-            mExoPlayer = null;
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        releasePlayer();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(mExoPlayer != null){
-            mCurrentPosition = mExoPlayer.getCurrentPosition();
         }
     }
 

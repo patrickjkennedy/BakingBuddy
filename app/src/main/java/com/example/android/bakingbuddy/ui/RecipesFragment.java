@@ -3,10 +3,14 @@ package com.example.android.bakingbuddy.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,13 +50,16 @@ public class RecipesFragment extends Fragment{
     // ProgressBar for Loading
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
+    // Key for Recycler Layout
+    private static final String BUNDLE_RECYCLER_LAYOUT = "RecipesFragment.recycler.layout";
+
     // Mandatory empty constructor
     public RecipesFragment(){
     }
 
     // Inflates the RecyclerView containing the CardViews for each recipe
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
 
         // Context
         mContext = getActivity();
@@ -126,6 +133,9 @@ public class RecipesFragment extends Fragment{
 
                 // Hide the loading icon
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+                // Reload the adapter
+                onViewStateRestored(savedInstanceState);
             }
 
             @Override
@@ -138,6 +148,23 @@ public class RecipesFragment extends Fragment{
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if(savedInstanceState != null)
+        {
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
     }
 
 }
