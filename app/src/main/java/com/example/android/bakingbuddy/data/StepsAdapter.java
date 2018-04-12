@@ -27,9 +27,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
     //ArrayList of Steps
     private ArrayList<Step> mSteps = new ArrayList<>();
 
-    // Two pane mode
-    private boolean mTwoPane;
-
     /**
      * The interface for custom RecyclerViewClickListener
      *
@@ -38,10 +35,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
         void onClick(View view, int position);
     }
 
-    public StepsAdapter(StepsAdapterClickListener listener, Context context, Boolean twoPane){
+    public StepsAdapter(StepsAdapterClickListener listener, Context context){
         this.mListener = listener;
         this.mContext = context;
-        this.mTwoPane = twoPane;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -80,13 +76,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
     }
 
     public void setSteps(Recipe recipe){
-        if(mTwoPane){
-            mSteps = recipe.getSteps();
-            notifyDataSetChanged();
-        } else {
-            mSteps = recipe.getSteps();
-            mSteps.remove(0);
-            notifyDataSetChanged();
-        }
+        mSteps = recipe.getSteps();
+        notifyDataSetChanged();
     }
 }
