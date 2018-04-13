@@ -65,7 +65,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     @BindView(R.id.player_view) SimpleExoPlayerView mPlayerView;
 
     // Recipe Imageview
-    @BindView(R.id.iv_recipeImage) ImageView mRecipeImageView;
+    @BindView(R.id.iv_stepThumbnail) ImageView mStepThumbnailImageView;
 
     // SimpleExoPlayer
     private SimpleExoPlayer mExoPlayer;
@@ -88,12 +88,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
 
     // Video URL
     private String mVideoUrl;
-
-    // Thumbnail URL
-    private String mThumbnailUrl;
-
-    // Image
-    private String mRecipeImage;
 
     // Current position (for OnResume)
     private long mCurrentPosition;
@@ -175,37 +169,30 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         // Get the step from position in the array
         mStep = mSteps.get(mPosition);
 
-        // Get the image from the json
-        mRecipeImage = mRecipe.getImage();
-
         // Get the video url from the step
         mVideoUrl = mStep.getVideoURL();
 
         //Get the thumbnail url
-        mThumbnailUrl = mStep.getThumbnailURL();
+        String mThumbnailUrl = mStep.getThumbnailURL();
 
-        // Video and image logic
         /*
-        As per rubric: App uses RecyclerView and can handle recipe steps that include videos or images.
+        Display mVideoUrl in SimpleExoPlayerView, display mThumbnailUrl in ImageView
          */
-        if(!mVideoUrl.isEmpty() && mThumbnailUrl.isEmpty()){
-            // If the videoUrl is not empty, and the thumbnail is, use the videoUrl
+        if(!mVideoUrl.isEmpty()){
+            // If the videoUrl is not empty, load the video
             initializePlayer(mVideoUrl);
             mPlayerView.setVisibility(View.VISIBLE);
-        } else if(!mThumbnailUrl.isEmpty() && mVideoUrl.isEmpty()){
-            // If the videoUrl is empty, use the thumbnailUrl video
-            initializePlayer(mThumbnailUrl);
-            mPlayerView.setVisibility(View.VISIBLE);
-        } else if (!mRecipeImage.isEmpty()){
-            // Display the recipe image
-            mRecipeImageView.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(mRecipeImage).into(mRecipeImageView);
         } else {
+
             // If there is no data, display the placeholder image for the recipe
-            int image = placeholderMap.get(mRecipe.getName());
-            // Display the recipe placeholder image
-            mRecipeImageView.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(image).into(mRecipeImageView);
+            int placeholder = placeholderMap.get(mRecipe.getName());
+
+            // Load the thumbnailUrl into an imageview
+            mStepThumbnailImageView.setVisibility(View.VISIBLE);
+            Glide.with(mContext)
+                    .load(mThumbnailUrl)
+                    .placeholder(placeholder)
+                    .into(mStepThumbnailImageView);
         }
 
         // Check if coming from saved instance state, and track to that position

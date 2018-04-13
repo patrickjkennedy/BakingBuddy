@@ -7,14 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.example.android.bakingbuddy.R;
 import com.example.android.bakingbuddy.model.Recipe;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 /**
  * Created by pkennedy on 3/18/18.
@@ -26,8 +27,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
     private MasterListAdapterClickListener mListener;
 
-    // I'll put some placeholder data here to use for testing
-    private int[] images = { R.drawable.nutella_pie, R.drawable.brownies, R.drawable.yellow_cake, R.drawable.cheesecake };
+    // Hashmap for Recipe placeholder images
+    private HashMap<String, Integer> placeholderMap = new HashMap<>();
 
     // ArrayList of Recipes
     private ArrayList<Recipe> mRecipes = new ArrayList<>();
@@ -66,6 +67,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        initPlaceHolderMap();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_layout_recipes_item, parent, false);
         return new ViewHolder(view, mListener);
@@ -73,7 +75,15 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.itemImage.setImageResource(images[position]);
+
+        // If there is no data in image json, display the placeholder image for the recipe
+        int placeholder = placeholderMap.get(mRecipes.get(position).getName());
+
+        Glide.with(mContext)
+                .load(mRecipes.get(position).getImage())
+                .placeholder(placeholder)
+                .into(holder.itemImage);
+
         holder.itemName.setText(mRecipes.get(position).getName());
         holder.itemServes.setText(mRecipes.get(position).getServings());
     }
@@ -87,5 +97,12 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     public void setRecipes(ArrayList<Recipe> recipes){
         mRecipes = recipes;
         notifyDataSetChanged();
+    }
+
+    private void initPlaceHolderMap(){
+        placeholderMap.put("Nutella Pie", R.drawable.nutella_pie);
+        placeholderMap.put("Brownies", R.drawable.brownies);
+        placeholderMap.put("Yellow Cake", R.drawable.yellow_cake);
+        placeholderMap.put("Cheesecake", R.drawable.cheesecake);
     }
 }
